@@ -8,6 +8,9 @@ public class User {
     private String nickname;
     private int userid;
 
+    public User() {
+    }
+
     public User(String nickname, int userid) {
         this.nickname = nickname;
         this.userid = userid;

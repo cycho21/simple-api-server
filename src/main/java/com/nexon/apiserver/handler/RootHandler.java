@@ -1,5 +1,6 @@
 package com.nexon.apiserver.handler;
 
+import com.nexon.apiserver.dao.Dao;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -15,12 +16,25 @@ import java.net.URI;
  */
 public class RootHandler implements HttpHandler {
 
-    public void handle(HttpExchange t) throws IOException {
-        InputStream is = t.getRequestBody();
-        String response = "This is the response";
-        t.sendResponseHeaders(200, response.length());
-        OutputStream os = t.getResponseBody();
+    private Dao dao;
+
+    public RootHandler() {
+    }
+
+    public void handle(HttpExchange httpExchange) throws IOException {
+        InputStream is = httpExchange.getRequestBody();
+        String response = "Server status OK...";
+        httpExchange.sendResponseHeaders(200, response.length());
+        OutputStream os = httpExchange.getResponseBody();
         os.write(response.getBytes());
         os.close();
+    }
+
+    public Dao getDao() {
+        return dao;
+    }
+
+    public void setDao(Dao dao) {
+        this.dao = dao;
     }
 }

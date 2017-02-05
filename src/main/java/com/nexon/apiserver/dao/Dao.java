@@ -1,6 +1,8 @@
 package com.nexon.apiserver.dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Created by Administrator on 2017-02-04.
@@ -14,6 +16,8 @@ public class Dao {
     public Dao() {
         this.fileName = "TestFileName";
         this.jdbcTemplate = new SimpleSqliteTemplate();
+        dropTable();
+        createTable();
     }
 
     public void dropTable() {
@@ -25,15 +29,23 @@ public class Dao {
     }
 
     public User addUser(String nickname) {
+        if (getUser(nickname).getUserid() != 0) {
+            System.out.println("Nickname exists!");
+            return null;
+        }
+
         jdbcTemplate.executeUpdate("INSERT INTO users values ('" + nickname + "');");
-        int userid = jdbcTemplate.executeQuery("SELECT rowid FROM users WHERE nickname='" + nickname + "';");
-        User retUser = new User(nickname, userid);
-        return retUser;
+        int userid = 0;
+        User user = jdbcTemplate.executeQuery("SELECT rowid FROM users WHERE nickname='" + nickname + "';");
+        user.setNickname(nickname);
+        return user;
     }
 
-    private int getUser(String nickname) {
-        int userid  = jdbcTemplate.executeQuery("SELECT rowid FROM users WHERE nickname='" + nickname + "';");
-        return userid;
+    private User getUser(String nickname) {
+        int userid = 0;
+        User user = jdbcTemplate.executeQuery("SELECT rowid FROM users WHERE nickname='" + nickname + "';");
+        user.setNickname(nickname);
+        return user;
     }
 
 //    public User getUser(int userid) {

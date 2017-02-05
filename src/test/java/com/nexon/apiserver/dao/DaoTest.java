@@ -15,18 +15,18 @@ public class DaoTest {
     public void setUp() {
         this.dao = new Dao();
         dao.createTable();
-//        System.out.println("SETUP OK");
+        System.out.println("SETUP OK");
     }
 
     @Test
     public void testInsertOperation() {
-//        System.out.println("TEST INSERT START");
+        System.out.println("TEST INSERT START");
         int id = dao.addUser("chanyeon").getUserid();
-//        System.out.println(dao.getUser(id).getNickname());
+//        System.out.println(dao.getUser(id));
     }
 
     @After
-    public void coolDown() {
+    public void dropTable() {
         dao.dropTable();
     }
 }
