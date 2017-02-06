@@ -18,12 +18,12 @@ public class Server {
         server.start(8000);
     }
 
-    private void start(int port) {
+    public void start(int port) {
         try {
             Dao dao = new Dao();
             HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-            server.createContext("/test", new RootHandler());
-            server.createContext("/user", new UserHandler(dao));
+            server.createContext("/testuri", new RootHandler());
+            server.createContext("/api/v1/users", new UserHandler(dao));
             server.setExecutor(null); // creates a default executor
             server.start();
         } catch (IOException e) {

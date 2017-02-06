@@ -1,6 +1,5 @@
 package com.nexon.apiserver.dao;
 
-import javax.xml.transform.Result;
 import java.sql.*;
 
 /**
@@ -33,7 +32,7 @@ public class SimpleSqliteTemplate {
             }
         }
     }
-
+    
     public User executeQuery(String query) {
         openDb();
         PreparedStatement preparedStatement = null;
@@ -42,7 +41,7 @@ public class SimpleSqliteTemplate {
             preparedStatement = connection.prepareStatement(query);
             rs = preparedStatement.executeQuery();
             System.out.println("Execute Query Success : " + query);
-            User retUser = new User(null ,rs.getInt("rowid"));
+            User retUser = new User(null, rs.getInt("rowid"));
             return retUser;
         } catch (SQLException e) {
             return new User(null, 0);
@@ -58,28 +57,30 @@ public class SimpleSqliteTemplate {
         }
     }
 
-//    public String executeQuery(int userid) {
-//        openDb();
-//        ResultSet rs = null;
-//        PreparedStatement preparedStatement = null;
-//        try {
-//            preparedStatement = connection.prepareStatement(query);
-//            rs = preparedStatement.executeQuery();
-//            System.out.println("Execute Query Success : " + query);
-//            return rs.getInt("rowid");
-//        } catch (SQLException e) {
-//            return -1;
-//        } finally {
-//            try {
-//                if (rs != null)
-//                    rs.close();
-//                if (preparedStatement != null)
-//                    preparedStatement.close();
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
+    public User executeQueryByUserId(String query) {
+        openDb();
+        ResultSet rs = null;
+        PreparedStatement preparedStatement = null;
+        User user = new User();
+        try {
+            preparedStatement = connection.prepareStatement(query);
+            rs = preparedStatement.executeQuery();
+            System.out.println("Execute Query Success : " + query);
+            user.setNickname(rs.getString("nickname"));
+            return user;
+        } catch (SQLException e) {
+            return new User(null, 0);
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (preparedStatement != null)
+                    preparedStatement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public void openDb() {
         try {

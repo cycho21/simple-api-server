@@ -17,12 +17,17 @@ import java.util.regex.Pattern;
  */
 public class UserHandler implements HttpHandler {
 
+    private static final String SPECIAL_LETTER_DETAIL = "Nickname must alphanumeric but request nickname contains special letters.";
+    private static final String LONGER_THAN_TWENTY = "Nickname must less than 20 characters.";
+    private static final String NO_USER = "There is no user that you request";
+    private NicknameValidator nicknameValidator;
     private JSONParser jsonParser;
     private Dao dao;
 
     public UserHandler(Dao dao) {
         this.dao = dao;
         this.jsonParser = new JSONParser();
+        this.nicknameValidator = new NicknameValidator();
     }
 
     public void handle(HttpExchange httpExchange) throws IOException {
@@ -41,13 +46,28 @@ public class UserHandler implements HttpHandler {
 
     private void handlePathVariableUri(HttpExchange httpExchange, String pathVariable) {
         String request = httpExchange.getRequestMethod();
-
+        String response = "";
+        User user = null;
         switch (request) {
             case "GET":
+                user = dao.getUser(Integer.parseInt(pathVariable, 10));
+                response = makeBodyFromUser(user).toJSONString();
+                sendResponse(httpExchange, response);
                 break;
-            case "POST":
-                User user = parseResponseBodyToUser(httpExchange.getRequestBody());
-                System.out.println(user.getNickname());
+            case "PUT":
+                user = parseBodyToUser(httpExchange.getRequestBody());
+                dao.updateUser(Integer.parseInt(pathVariable, 10), user.getNickname());
+                user = dao.getUser(Integer.parseInt(pathVariable, 10));
+                response = makeBodyFromUser(user).toJSONString();
+                sendResponse(httpExchange, response);
+                break;
+            case "DELETE":
+                if (dao.getUser(Integer.parseInt(pathVariable, 10)).getUserid() != 0) {
+                    dao.deleteUser(Integer.parseInt(pathVariable, 10));
+                    sendResponse(httpExchange, response);
+                } else {
+                    sendErrorResponse(httpExchange, 400, NO_USER);
+                }
                 break;
         }
     }
@@ -59,15 +79,43 @@ public class UserHandler implements HttpHandler {
             case "GET":
                 break;
             case "POST":
-                User user = parseResponseBodyToUser(httpExchange.getRequestBody());
-                User retUser = dao.addUser(user.getNickname());
-                String response = makeBodyFromUser(retUser).toJSONString();
-                sendResponce(httpExchange, response);
+                User user = parseBodyToUser(httpExchange.getRequestBody());
+                int code = nicknameValidator.isValidateName(user.getNickname());
+                switch (code) {
+                    case NicknameValidator.SPECIAL_LETTER:
+                        sendErrorResponse(httpExchange, 400, SPECIAL_LETTER_DETAIL);
+                        break;
+                    case NicknameValidator.LONGER_THAN_TWENTY:
+                        sendErrorResponse(httpExchange, 400, LONGER_THAN_TWENTY);
+                        break;
+                    case NicknameValidator.ALPHA_NUMERIC:
+                        User retUser = dao.addUser(user.getNickname());
+                        String response = makeBodyFromUser(retUser).toJSONString();
+                        sendResponse(httpExchange, response);
+                        break;
+                }
                 break;
         }
     }
 
-    private void sendResponce(HttpExchange httpExchange, String response) {
+    private void sendErrorResponse(HttpExchange httpExchange, int statusCode, String detail) {
+        OutputStream outputStream = null;
+        try {
+            httpExchange.sendResponseHeaders(statusCode, detail.length());
+            outputStream = httpExchange.getResponseBody();
+            outputStream.write(detail.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void sendResponse(HttpExchange httpExchange, String response) {
         OutputStream outputStream = null;
         try {
             httpExchange.sendResponseHeaders(200, response.length());
@@ -91,7 +139,7 @@ public class UserHandler implements HttpHandler {
         return jsonObject;
     }
 
-    private User parseResponseBodyToUser(InputStream requestBody) {
+    private User parseBodyToUser(InputStream requestBody) {
         User user = new User();
         try {
             JSONObject jsonObject = (JSONObject) jsonParser.parse(getJsonFromBody(requestBody));
@@ -135,4 +183,5 @@ public class UserHandler implements HttpHandler {
     public void setDao(Dao dao) {
         this.dao = dao;
     }
+
 }
