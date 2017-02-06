@@ -15,7 +15,6 @@ import java.net.URI;
  * Created by Administrator on 2017-02-04.
  */
 public class RootHandler implements HttpHandler {
-
     private Dao dao;
 
     public RootHandler() {

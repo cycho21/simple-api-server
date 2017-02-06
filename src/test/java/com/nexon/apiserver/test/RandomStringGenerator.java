@@ -1,6 +1,5 @@
 package com.nexon.apiserver.test;
 
-import java.security.SecureRandom;
 import java.util.Random;
 
 /**

@@ -4,8 +4,6 @@ import com.nexon.apiserver.dao.Dao;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by chanyeon on 2017-02-05.
  */

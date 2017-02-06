@@ -14,7 +14,8 @@ public class DaoTest {
     @Before
     public void setUp() {
         this.dao = new Dao();
-//        dao.createUsersTable();
+        dao.dropUsersTable();
+        dao.createUsersTable();
         System.out.println("SETUP OK");
     }
 
@@ -22,13 +23,17 @@ public class DaoTest {
     public void testInsertOperation() {
         System.out.println("TEST INSERT START");
         int id = dao.addUser("chanyeon").getUserid();
-//        System.out.println(dao.getUser(id).getNickname() + " : " + dao.getUser(id).getUserid());
+        dao.addUser("c2");
+        dao.addUser("c3");
+        dao.addUser("c4");
+        dao.addUser("c5");
+        dao.addUser("c6");
         dao.updateUser(id, "chanyeon2");
-//        dao.deleteUser(1);
+        dao.deleteUser(1);
     }
 
-    @After
-    public void dropTable() {
+//    @After
+//    public void dropTable() {
 //        dao.dropUsersTable();
-    }
+//    }
 }

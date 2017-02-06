@@ -98,8 +98,9 @@ public class UserTest {
     public void testPutUser(String originName, String newName) throws IOException, ParseException {
         Response response = postUsers(originName);
         User getUser = getUsers(response.getUser().getUserid());
-
+        
         response = putUser(getUser.getUserid(), newName);
+        
         assertEquals(response.getUser().getNickname(), newName);
         assertEquals(response.getUser().getUserid(), getUser.getUserid());
     }

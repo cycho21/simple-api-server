@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
  * Created by chan8 on 2017-02-06.
  */
 public class NicknameValidator {
-
     public static final int ALPHA_NUMERIC = 0;
     public static final int LONGER_THAN_TWENTY = 1;
     public static final int SPECIAL_LETTER = 2;

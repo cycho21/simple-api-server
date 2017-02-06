@@ -16,7 +16,6 @@ import java.util.regex.Pattern;
  * Created by Administrator on 2017-02-04.
  */
 public class UserHandler implements HttpHandler {
-    
     private static final String SPECIAL_LETTER = "Nickname must alphanumeric but request nickname contains special letters.";
     private static final String LONGER_THAN_TWENTY = "Nickname must less than 20 characters.";
     private static final String NO_USER = "There is no user that you request";

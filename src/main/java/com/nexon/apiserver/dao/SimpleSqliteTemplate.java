@@ -6,29 +6,32 @@ import java.sql.*;
  * Created by Administrator on 2017-02-04.
  */
 public class SimpleSqliteTemplate {
-
     public static final int USER = 0;
     public static final int CHATROOM = 1;
     public static final int CHAT = 2;
 
     private Connection connection;
+    private String testFileName;
 
     public SimpleSqliteTemplate() {
+        this.testFileName = "test.db";
     }
 
-    public void executeUpdate(String query) {
+    public Connection makeConnection() {
         openDb();
-        Statement statement = null;
+        return this.connection;
+    }
+
+    public void executeUpdate(PreparedStatement preparedStatement) {
         try {
-            statement = connection.createStatement();
-            statement.executeUpdate(query);
-            System.out.println("Execute Update Query Success : " + query);
+            preparedStatement.executeUpdate();
+//            System.out.println(" :: Execute Update Query Success :: ");
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             try {
-                if (!statement.isClosed() && statement != null)
-                    statement.close();
+                if (!preparedStatement.isClosed() && preparedStatement != null)
+                    preparedStatement.close();
                 if (!connection.isClosed() && connection != null)
                     connection.close();
             } catch (SQLException e) {
@@ -42,7 +45,7 @@ public class SimpleSqliteTemplate {
             case USER:
                 User user = null;
                 try {
-                    user = new User(null, resultSet.getInt("rowid"));
+                    user = new User(null, resultSet.getInt("userid"));
                     return user;
                 } catch (SQLException e) {
                     try {
@@ -57,15 +60,13 @@ public class SimpleSqliteTemplate {
         }
         return null;
     }
-
-    public Object executeQuery(String query, int type) {
+    
+    public Object executeQuery(PreparedStatement preparedStatement, int type) {
         openDb();
-        PreparedStatement preparedStatement = null;
         ResultSet rs = null;
         try {
-            preparedStatement = connection.prepareStatement(query);
             rs = preparedStatement.executeQuery();
-            System.out.println("Execute Query Success : " + query);
+//            System.out.println(" :: Execute Query Success :: ");
             return resultSetToObject(rs, type);
         } catch (SQLException e) {
             return new User(null, 0);
@@ -85,12 +86,23 @@ public class SimpleSqliteTemplate {
         try {
             try {
                 Class.forName("org.sqlite.JDBC");
-                connection = DriverManager.getConnection("jdbc:sqlite:./test0.db");
+                connection = DriverManager.getConnection("jdbc:sqlite:./" + testFileName);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public PreparedStatement preparedStatement(String preparedQuery) {
+        openDb();
+        try {
+            PreparedStatement preparedStatement = this.makeConnection().prepareStatement(preparedQuery);
+            return preparedStatement;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
