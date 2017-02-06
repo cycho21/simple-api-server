@@ -26,6 +26,7 @@ public class UserTest {
 
     private static final String HOST_URL = "http://localhost:";
     private static final int PORT = 8000;
+    private static final String BASE_URL = "/api/v1/";
     private JSONParser jsonParser;
     private RandomStringGenerator randomStringGenerator;
     private Random random;
@@ -66,13 +67,16 @@ public class UserTest {
         User getUser = getUsers(response.getUser().getUserid());
         response = deleteUser(getUser.getUserid());
         
+        // Delete exist user : expect status code 200
         assertEquals(200, response.getStatusCode());
+        
+        // Delete non exist user : expect status code 400
         response = deleteUser(random.nextInt(Integer.MAX_VALUE));
         assertEquals(400, response.getStatusCode());
     }
 
     private Response deleteUser(int userid) throws IOException, ParseException {
-        String str = HOST_URL + PORT + "/api/v1/users/" + userid;
+        String str = HOST_URL + PORT + BASE_URL + "users/" + userid;
 
         URL url = new URL(str);
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -101,7 +105,7 @@ public class UserTest {
     }
 
     private Response putUser(int userid, String nickname) throws IOException, ParseException {
-        String str = HOST_URL + PORT + "/api/v1/users/" + userid;
+        String str = HOST_URL + PORT + BASE_URL + "users/" + userid;
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("nickname", nickname);
@@ -136,7 +140,7 @@ public class UserTest {
     }
 
     public Response postUsers(String nickname) throws IOException, ParseException {
-        String str = HOST_URL + PORT + "/api/v1/users/";
+        String str = HOST_URL + PORT + BASE_URL + "users/";
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("nickname", nickname);
@@ -171,7 +175,7 @@ public class UserTest {
     }
 
     public User getUsers(int userid) throws IOException, ParseException {
-        String str = HOST_URL + PORT + "/api/v1/users/" + userid;
+        String str = HOST_URL + PORT + BASE_URL + "users/" + userid;
 
         URL url = new URL(str);
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();

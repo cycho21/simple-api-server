@@ -16,8 +16,8 @@ import java.util.regex.Pattern;
  * Created by Administrator on 2017-02-04.
  */
 public class UserHandler implements HttpHandler {
-
-    private static final String SPECIAL_LETTER_DETAIL = "Nickname must alphanumeric but request nickname contains special letters.";
+    
+    private static final String SPECIAL_LETTER = "Nickname must alphanumeric but request nickname contains special letters.";
     private static final String LONGER_THAN_TWENTY = "Nickname must less than 20 characters.";
     private static final String NO_USER = "There is no user that you request";
     private NicknameValidator nicknameValidator;
@@ -47,21 +47,31 @@ public class UserHandler implements HttpHandler {
     private void handlePathVariableUri(HttpExchange httpExchange, String pathVariable) {
         String request = httpExchange.getRequestMethod();
         String response = "";
-        User user = null;
+        User user;
         switch (request) {
-            case "GET":
+            case HttpMethod.GET:
                 user = dao.getUser(Integer.parseInt(pathVariable, 10));
                 response = makeBodyFromUser(user).toJSONString();
                 sendResponse(httpExchange, response);
                 break;
-            case "PUT":
+            case HttpMethod.PUT:
                 user = parseBodyToUser(httpExchange.getRequestBody());
-                dao.updateUser(Integer.parseInt(pathVariable, 10), user.getNickname());
-                user = dao.getUser(Integer.parseInt(pathVariable, 10));
-                response = makeBodyFromUser(user).toJSONString();
-                sendResponse(httpExchange, response);
+                switch (nicknameValidator.isValidateName(user.getNickname())) {
+                    case NicknameValidator.ALPHA_NUMERIC:
+                        dao.updateUser(Integer.parseInt(pathVariable, 10), user.getNickname());
+                        user = dao.getUser(Integer.parseInt(pathVariable, 10));
+                        response = makeBodyFromUser(user).toJSONString();
+                        sendResponse(httpExchange, response);
+                        break;
+                    case NicknameValidator.LONGER_THAN_TWENTY:
+                        sendErrorResponse(httpExchange, 400, LONGER_THAN_TWENTY);
+                        break;
+                    case NicknameValidator.SPECIAL_LETTER:
+                        sendErrorResponse(httpExchange, 400, SPECIAL_LETTER);
+                        break;
+                }
                 break;
-            case "DELETE":
+            case HttpMethod.DELETE:
                 if (dao.getUser(Integer.parseInt(pathVariable, 10)).getUserid() != 0) {
                     dao.deleteUser(Integer.parseInt(pathVariable, 10));
                     sendResponse(httpExchange, response);
@@ -76,14 +86,14 @@ public class UserHandler implements HttpHandler {
         String request = httpExchange.getRequestMethod();
 
         switch (request) {
-            case "GET":
+            case HttpMethod.GET:
                 break;
-            case "POST":
+            case HttpMethod.POST:
                 User user = parseBodyToUser(httpExchange.getRequestBody());
                 int code = nicknameValidator.isValidateName(user.getNickname());
                 switch (code) {
                     case NicknameValidator.SPECIAL_LETTER:
-                        sendErrorResponse(httpExchange, 400, SPECIAL_LETTER_DETAIL);
+                        sendErrorResponse(httpExchange, 400, SPECIAL_LETTER);
                         break;
                     case NicknameValidator.LONGER_THAN_TWENTY:
                         sendErrorResponse(httpExchange, 400, LONGER_THAN_TWENTY);
@@ -179,9 +189,4 @@ public class UserHandler implements HttpHandler {
         }
         return stringBuilder.toString();
     }
-
-    public void setDao(Dao dao) {
-        this.dao = dao;
-    }
-
 }

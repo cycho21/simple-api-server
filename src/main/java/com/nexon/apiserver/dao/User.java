@@ -4,7 +4,6 @@ package com.nexon.apiserver.dao;
  * Created by Administrator on 2017-02-04.
  */
 public class User {
-
     private String nickname;
     private int userid;
 

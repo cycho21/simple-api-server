@@ -5,21 +5,19 @@ package com.nexon.apiserver.dao;
  */
 public class Dao {
 
-    private final String fileName;
     private final SimpleSqliteTemplate jdbcTemplate;
 
     public Dao() {
-        this.fileName = "TestFileName";
         this.jdbcTemplate = new SimpleSqliteTemplate();
-        dropTable();
-        createTable();
+        dropUsersTable();
+        createUsersTable();
     }
 
-    public void dropTable() {
+    public void dropUsersTable() {
         jdbcTemplate.executeUpdate("DROP TABLE users");
     }
 
-    public void createTable() {
+    public void createUsersTable() {
         jdbcTemplate.executeUpdate("CREATE TABLE users (nickname VARACHAR(20) not NULL);");
     }
 
@@ -30,19 +28,20 @@ public class Dao {
         }
 
         jdbcTemplate.executeUpdate("INSERT INTO users values ('" + nickname + "');");
-        User user = jdbcTemplate.executeQuery("SELECT rowid FROM users WHERE nickname='" + nickname + "';");
+        
+        User user = (User) jdbcTemplate.executeQuery("SELECT rowid FROM users WHERE nickname='" + nickname + "';", SimpleSqliteTemplate.USER);
         user.setNickname(nickname);
         return user;
     }
 
     private User getUser(String nickname) {
-        User user = jdbcTemplate.executeQuery("SELECT rowid FROM users WHERE nickname='" + nickname + "';");
+        User user = (User) jdbcTemplate.executeQuery("SELECT rowid FROM users WHERE nickname='" + nickname + "';", SimpleSqliteTemplate.USER);
         user.setNickname(nickname);
         return user;
     }
 
     public User getUser(int userid) {
-        User user = jdbcTemplate.executeQueryByUserId("SELECT nickname FROM users WHERE rowid=" + userid + ";");
+        User user = (User) jdbcTemplate.executeQuery("SELECT nickname FROM users WHERE rowid=" + userid + ";", SimpleSqliteTemplate.USER);
         if (user.getNickname() != null)
             user.setUserid(userid);
         return user;
