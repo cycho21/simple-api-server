@@ -60,11 +60,16 @@ public class UserTest {
     public void testPostUserOverTwentyLetter() throws IOException, ParseException {
         testPostUser(randomStringGenerator.nextRandomString(25));
     }
-
+    
     @Test   // TCU-0121
     public void testPostUserExist() throws IOException, ParseException {
         String name = randomStringGenerator.nextRandomString(20);
         testPostUserExist(name);
+    }
+    
+    @Test   // TCU-0114
+    public void testPostUserWithSpecialLetter() throws IOException, ParseException {
+        testPostUser(randomStringGenerator.nextRandomString(10) + "!@#$");
     }
 
     @Test   // TCU-0211
