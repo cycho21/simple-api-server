@@ -1,4 +1,4 @@
-package com.nexon.apiserver.handler;
+package com.nexon.apiserver.utils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,9 +10,6 @@ public class NicknameValidator {
     public static final int ALPHA_NUMERIC = 0;
     public static final int LONGER_THAN_TWENTY = 1;
     public static final int SPECIAL_LETTER = 2;
-    
-    public NicknameValidator() {
-    }
     
     public int isValidateName(String nickname) {
         Pattern notAlphaNumeric = Pattern.compile("\\W");

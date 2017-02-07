@@ -126,6 +126,7 @@ public class SimpleSqliteTemplate {
     public PreparedStatement preparedStatement(String preparedQuery) {
         openDb();
         try {
+            System.out.println(preparedQuery);
             PreparedStatement preparedStatement = this.makeConnection().prepareStatement(preparedQuery);
             return preparedStatement;
         } catch (SQLException e) {

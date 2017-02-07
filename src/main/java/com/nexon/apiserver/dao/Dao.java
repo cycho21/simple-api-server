@@ -177,15 +177,17 @@ public class Dao {
 
     public List<Chatroom> getChatRoomByUserid(int userid) {
         PreparedStatement preparedStatement = jdbcTemplate.preparedStatement("SELECT chatrooms.chatroomid, chatrooms.chatroomname " +
-                "FROM chatrooms INNER JOIN chatroomssnapshot" +
-                "ON chatroomssnapshot.chatroomid = chatrooms.chatroomdid" +
-                "WHERE chatroomssnapshot.userid =?" + ";");
+                "FROM chatrooms INNER JOIN chatroomssnapshot " +
+                "ON chatroomssnapshot.chatroomid = chatrooms.chatroomid " +
+                "WHERE chatroomssnapshot.userid=?;");
         try {
             preparedStatement.setInt(1, userid);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+         
         List<Chatroom> chatroomList = (List<Chatroom>) jdbcTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.CHATROOMS);
         return chatroomList;
     }
+
 }

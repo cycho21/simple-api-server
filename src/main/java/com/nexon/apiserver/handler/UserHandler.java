@@ -1,7 +1,10 @@
 package com.nexon.apiserver.handler;
 
+import com.nexon.apiserver.dao.Chatroom;
 import com.nexon.apiserver.dao.Dao;
 import com.nexon.apiserver.dao.User;
+import com.nexon.apiserver.utils.MappingUtils;
+import com.nexon.apiserver.utils.NicknameValidator;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.json.simple.JSONObject;
@@ -9,6 +12,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,8 +52,16 @@ public class UserHandler implements HttpHandler {
         String request = httpExchange.getRequestMethod();
         String response = "";
         User user;
+        String[] pathVariables = pathVariable.split("/");
         switch (request) {
             case HttpMethod.GET:
+                if (pathVariables[pathVariables.length - 1].contains("chatrooms")) {
+                    List<Chatroom> chatrooms = dao.getChatRoomByUserid(Integer.parseInt(pathVariables[0]));
+                    response = MappingUtils.makeBodyFromChatrooms(chatrooms).toJSONString();
+                    System.out.println(response);
+                    sendResponse(httpExchange, response);
+                }
+                
                 user = dao.getUser(Integer.parseInt(pathVariable, 10));
                 
                 if (user.getNickname() != null) {
@@ -64,7 +76,6 @@ public class UserHandler implements HttpHandler {
                 user = parseBodyToUser(httpExchange.getRequestBody());
                 
                 if (dao.getUser(user.getUserid()).getUserid() != 0) {
-                    System.out.println("!!!");
                     sendErrorResponse(httpExchange, 409, ALREADY_EXIST);
                     break;
                 }

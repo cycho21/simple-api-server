@@ -46,7 +46,10 @@ public class ChatroomHandler implements HttpHandler {
         String requestMethod = httpExchange.getRequestMethod();
         String response = "";
         
-        switch () {
+        
+        switch (requestMethod) {
+            case HttpMethod.POST:
+                break;
         }
     }
 

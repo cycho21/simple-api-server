@@ -4,7 +4,9 @@ import com.nexon.apiserver.Response;
 import com.nexon.apiserver.Server;
 import com.nexon.apiserver.dao.Chatroom;
 import com.nexon.apiserver.dao.User;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.Before;
@@ -16,6 +18,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
@@ -111,11 +115,64 @@ public class UserTest {
     }
     
     @Test   // TCU-0511
-    public void getChatrooms() throws IOException, ParseException {
+    public void getOwnChatrooms() throws IOException, ParseException {
         Response response = postUsers(randomStringGenerator.nextRandomString(15));
         Chatroom chatroom1 = postChatRoom(randomStringGenerator.nextRandomString(30), response.getUser().getUserid()).getChatroom();
         Chatroom chatroom2 = postChatRoom(randomStringGenerator.nextRandomString(30), response.getUser().getUserid()).getChatroom();
-        assertEquals(chatroom1.getUserid(), chatroom2.getUserid());
+        
+        response = getOwnChatrooms(response.getUser().getUserid());
+        
+        int id1 = response.getChatroomArrayList().get(0).getChatroomid();
+        int id2 = response.getChatroomArrayList().get(1).getChatroomid();
+        assertEquals(chatroom1.getChatroomid(), 1);
+        assertEquals(chatroom2.getChatroomid(), 2);
+    }
+    
+    private Response getOwnChatrooms(int userid) throws IOException, ParseException {
+        String str = HOST_URL + PORT + BASE_URL + "users/" + userid + "/chatrooms";
+        
+        URL url = new URL(str);
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("GET");
+        urlConnection.setRequestProperty("Accept", "application/json");
+
+        Response response = new Response();
+        
+        if (urlConnection.getResponseCode() != 200) {
+            response.setStatusCode(urlConnection.getResponseCode());
+            return response;
+        }
+        response.setStatusCode(urlConnection.getResponseCode());
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+
+        String output;
+        StringBuilder sb = new StringBuilder();
+        
+        while ((output = br.readLine()) != null) {
+            sb.append(output);
+        }
+
+        urlConnection.disconnect();
+        JSONArray jsonArray = (JSONArray) JSONValue.parseWithException(sb.toString());
+        ArrayList<Chatroom> chatroomList = makeArrayListFromJsonArray(jsonArray);
+        response.setChatroomArrayList(chatroomList);
+        return response;
+    }
+
+    private ArrayList<Chatroom> makeArrayListFromJsonArray(JSONArray jsonArray) {
+        ArrayList<Chatroom> chatroomArrayList = new ArrayList<Chatroom>();
+        
+        for (int i = 0; i < jsonArray.size(); ++i) {
+            JSONObject obj = (JSONObject) jsonArray.get(i);
+            Chatroom chatroom = new Chatroom();
+            chatroom.setChatroomname((String) obj.get("chatroomname"));
+            chatroom.setChatroomid(Integer.parseInt(String.valueOf(obj.get("chatroomid"))));
+            
+            chatroomArrayList.add(chatroom);
+        }
+        
+        return chatroomArrayList;
     }
 
     private void postChatroomExist(String chatroomname) throws IOException, ParseException {

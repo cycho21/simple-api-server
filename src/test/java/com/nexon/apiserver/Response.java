@@ -3,6 +3,8 @@ package com.nexon.apiserver;
 import com.nexon.apiserver.dao.Chatroom;
 import com.nexon.apiserver.dao.User;
 
+import java.util.ArrayList;
+
 /**
  * Created by chan8 on 2017-02-06.
  */
@@ -11,6 +13,7 @@ public class Response {
     private int statusCode;
     private User user;
     private Chatroom chatroom;
+    private ArrayList<Chatroom> chatroomArrayList;
 
     public Response() {
         this.user = new User();
@@ -20,6 +23,14 @@ public class Response {
     public Response(int statusCode) {
         this.statusCode = statusCode;
         this.user = new User();
+    }
+
+    public ArrayList<Chatroom> getChatroomArrayList() {
+        return chatroomArrayList;
+    }
+
+    public void setChatroomArrayList(ArrayList<Chatroom> chatroomArrayList) {
+        this.chatroomArrayList = chatroomArrayList;
     }
 
     public int getStatusCode() {
