@@ -1,6 +1,8 @@
 package com.nexon.apiserver.dao;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017-02-04.
@@ -8,7 +10,8 @@ import java.sql.*;
 public class SimpleSqliteTemplate {
     public static final int USER = 0;
     public static final int CHATROOM = 1;
-    public static final int CHAT = 2;
+    public static final int CHATROOMS = 2;
+    public static final int CHAT = 3;
 
     private Connection connection;
     private String testFileName;
@@ -56,11 +59,36 @@ public class SimpleSqliteTemplate {
                     }
                 }
             case CHATROOM:
-                break;
+                Chatroom chatroom = null;
+                try {
+                    chatroom = new Chatroom(null, resultSet.getInt("chatroomid"), resultSet.getInt("userid"));
+                    return chatroom;
+                } catch (SQLException e) {
+                    try {
+                        chatroom = new Chatroom(resultSet.getString("chatroomname"), 0, resultSet.getInt("userid"));
+                        return chatroom;
+                    } catch (SQLException e1) {
+                        return new Chatroom(null, 0, 0);
+                    }
+                }
+            case CHATROOMS:
+                List<Chatroom> chatroomList = new ArrayList<Chatroom>();
+
+                try {
+                    while (resultSet.next()) {
+                        Chatroom tempchatroom = new Chatroom();
+                        tempchatroom.setChatroomid(resultSet.getInt("chatroomid"));
+                        tempchatroom.setChatroomname(resultSet.getString("chatroomname"));
+                        chatroomList.add(tempchatroom);
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                return chatroomList;
         }
         return null;
     }
-    
+
     public Object executeQuery(PreparedStatement preparedStatement, int type) {
         openDb();
         ResultSet rs = null;

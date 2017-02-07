@@ -32,4 +32,8 @@ public class RandomStringGenerator {
         }
         return new String(buffer);
     }
+    
+    public int nextRandomInt() {
+        return random.nextInt(65535);
+    }
 }

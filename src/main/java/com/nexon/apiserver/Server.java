@@ -28,10 +28,11 @@ public class Server {
 //            dao.createUsersTable();
             HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
             server.createContext("/testuri", new RootHandler());
-            server.createContext(BASE_URL + "/users", new UserHandler(dao));
-            server.createContext(BASE_URL + "/chatrooms", new ChatroomHandler(dao));
+            server.createContext("/api/v1/users", new UserHandler(dao));
+            server.createContext("/api/v1/chatrooms", new ChatroomHandler(dao));
             server.setExecutor(null); // creates a default executor
             server.start();
+            System.out.println("Server started...");
         } catch (IOException e) {
             System.out.println("Server create failed...");
         }

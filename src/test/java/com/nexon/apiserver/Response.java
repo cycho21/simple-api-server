@@ -1,5 +1,6 @@
 package com.nexon.apiserver;
 
+import com.nexon.apiserver.dao.Chatroom;
 import com.nexon.apiserver.dao.User;
 
 /**
@@ -9,8 +10,15 @@ public class Response {
     
     private int statusCode;
     private User user;
+    private Chatroom chatroom;
 
     public Response() {
+        this.user = new User();
+        this.chatroom = new Chatroom();
+    }
+    
+    public Response(int statusCode) {
+        this.statusCode = statusCode;
         this.user = new User();
     }
 
@@ -28,5 +36,13 @@ public class Response {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Chatroom getChatroom() {
+        return chatroom;
+    }
+
+    public void setChatroom(Chatroom chatroom) {
+        this.chatroom = chatroom;
     }
 }

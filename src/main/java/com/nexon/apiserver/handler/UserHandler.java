@@ -18,7 +18,8 @@ import java.util.regex.Pattern;
 public class UserHandler implements HttpHandler {
     private static final String SPECIAL_LETTER = "Nickname must alphanumeric but request nickname contains special letters.";
     private static final String LONGER_THAN_TWENTY = "Nickname must less than 20 characters.";
-    private static final String NO_USER = "There is no user that you request";
+    private static final String NO_USER = "There is no user that you request.";
+    private static final String ALREADY_EXIST = "Request name is already exists.";
     private NicknameValidator nicknameValidator;
     private JSONParser jsonParser;
     private Dao dao;
@@ -50,11 +51,24 @@ public class UserHandler implements HttpHandler {
         switch (request) {
             case HttpMethod.GET:
                 user = dao.getUser(Integer.parseInt(pathVariable, 10));
-                response = makeBodyFromUser(user).toJSONString();
-                sendResponse(httpExchange, response);
+                
+                if (user.getNickname() != null) {
+                    response = makeBodyFromUser(user).toJSONString();
+                    sendResponse(httpExchange, response);
+                } else {
+                    sendErrorResponse(httpExchange, 404, "Not Found");
+                }
+                
                 break;
             case HttpMethod.PUT:
                 user = parseBodyToUser(httpExchange.getRequestBody());
+                
+                if (dao.getUser(user.getUserid()).getUserid() != 0) {
+                    System.out.println("!!!");
+                    sendErrorResponse(httpExchange, 409, ALREADY_EXIST);
+                    break;
+                }
+                
                 switch (nicknameValidator.isValidateName(user.getNickname())) {
                     case NicknameValidator.ALPHA_NUMERIC:
                         dao.updateUser(Integer.parseInt(pathVariable, 10), user.getNickname());
@@ -89,6 +103,12 @@ public class UserHandler implements HttpHandler {
                 break;
             case HttpMethod.POST:
                 User user = parseBodyToUser(httpExchange.getRequestBody());
+                
+                if (dao.getUser(user.getNickname()).getUserid() != 0) {
+                    sendErrorResponse(httpExchange, 409, ALREADY_EXIST);
+                    break;
+                }
+                
                 int code = nicknameValidator.isValidateName(user.getNickname());
                 switch (code) {
                     case NicknameValidator.SPECIAL_LETTER:
