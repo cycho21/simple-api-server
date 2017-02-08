@@ -45,22 +45,25 @@ public class Dao {
                 "chatroomid INTEGER," +
                 "senderid INTEGER," +
                 "receiverid INTEGER," +
-                "messagebody VARCHAR(MAX);";
+                "messagebody VARCHAR(100) not NULL);";
         jdbcTemplate.executeUpdate(jdbcTemplate.preparedStatement(query));
     }
 
     private void createChatroomSnapShotTable() {
-        jdbcTemplate.executeUpdate(jdbcTemplate.preparedStatement("CREATE TABLE chatroomssnapshot (userid INTEGER," +
+        jdbcTemplate.executeUpdate(jdbcTemplate.preparedStatement("CREATE TABLE chatroomssnapshot " +
+                "(userid INTEGER," +
                 "chatroomid INTEGER);"));
     }
 
     public void createUsersTable() {
-        jdbcTemplate.executeUpdate(jdbcTemplate.preparedStatement("CREATE TABLE users (userid INTEGER PRIMARY KEY," +
+        jdbcTemplate.executeUpdate(jdbcTemplate.preparedStatement("CREATE TABLE users " +
+                "(userid INTEGER PRIMARY KEY," +
                 "nickname VARACHAR(20) not NULL);"));
     }
 
     public void createChatroomTable() {
-        jdbcTemplate.executeUpdate(jdbcTemplate.preparedStatement("CREATE TABLE chatrooms (chatroomid INTEGER PRIMARY KEY AUTOINCREMENT," +
+        jdbcTemplate.executeUpdate(jdbcTemplate.preparedStatement("CREATE TABLE chatrooms " +
+                "(chatroomid INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "userid INTEGER," +
                 "chatroomname VARCHAR(100) not NULL);"));
     }
@@ -71,7 +74,8 @@ public class Dao {
             return null;
         }
 
-        PreparedStatement preparedStatement = jdbcTemplate.preparedStatement("INSERT INTO users (nickname) values (?);");
+        PreparedStatement preparedStatement = jdbcTemplate.preparedStatement("INSERT INTO users " +
+                "(nickname) values (?);");
         try {
             preparedStatement.setString(1, nickname);
             jdbcTemplate.executeUpdate(preparedStatement);
@@ -91,7 +95,8 @@ public class Dao {
     }
 
     public void joinChatroom(int userid, int chatroomid) {
-        PreparedStatement preparedStatement = jdbcTemplate.preparedStatement("INSERT INTO chatroomssnapshot (userid, chatroomid) values(?, ?);");
+        PreparedStatement preparedStatement = jdbcTemplate.preparedStatement("INSERT INTO chatroomssnapshot " +
+                "(userid, chatroomid) values(?, ?);");
         try {
             preparedStatement.setInt(1, userid);
             preparedStatement.setInt(2, chatroomid);
@@ -113,6 +118,39 @@ public class Dao {
         User user = (User) jdbcTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.USER);
         user.setNickname(nickname);
         return user;
+    }
+    
+    public Message postMessage(int senderid, int receiverid, int chatroomid, String messageBody) {
+        PreparedStatement preparedStatement = jdbcTemplate.preparedStatement("INSERT INTO messages " +
+                "(senderid, receiverid, chatroomid, messagebody) values(?, ?, ?, ?)");
+        try {
+            preparedStatement.setInt(1, senderid);
+            preparedStatement.setInt(2, receiverid);
+            preparedStatement.setInt(3, chatroomid);
+            preparedStatement.setString(4, messageBody);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        int messageid = jdbcTemplate.executeUpdate(preparedStatement);
+        
+        System.out.println(messageid);
+        return null;
+    }
+    
+    public Message getMessage(int messageid) {
+        Message message = new Message();
+        String query = "SELECT senderid, receiverid, chatroomid, messagebody " +
+                "FROM messages " +
+                "WHERE messageid=?;";
+        PreparedStatement preparedStatement = jdbcTemplate.preparedStatement(query);
+        try {
+            preparedStatement.setInt(1, messageid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        jdbcTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.CHAT);
+
+        return message;
     }
 
     public User getUser(int userid) {

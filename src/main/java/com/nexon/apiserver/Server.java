@@ -32,6 +32,7 @@ public class Server {
             server.createContext("/api/v1/chatrooms", new ChatroomHandler(dao));
             server.setExecutor(null); // creates a default executor
             server.start();
+            
             System.out.println("Server started...");
         } catch (IOException e) {
             System.out.println("Server create failed...");

@@ -29,33 +29,35 @@ public class DaoTest {
         System.out.println("SETUP OK");
     }
 
-    @Test
-    public void makeBodyFromChatrooms() {
-        JSONArray jsonArray = new JSONArray();
-        List<Chatroom> chatroomList = new ArrayList<>();
-        for (int i = 0; i < 10; ++i) {
-            Chatroom chatroom = new Chatroom();
-            chatroom.setChatroomname(randomStringGenerator.nextRandomString(20));
-            chatroom.setChatroomid(randomStringGenerator.nextRandomInt());
-            chatroomList.add(i, chatroom);
-        }
-        
-        
-        for (int i = 0; i < chatroomList.size(); ++i) {
-            Chatroom tempChatroom = chatroomList.get(i);
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("chatroomname", tempChatroom.getChatroomname());
-            jsonObject.put("chatroomid", tempChatroom.getChatroomid());
-            jsonArray.add(i, jsonObject);
-        }
-        System.out.println(jsonArray.toJSONString());
-    }
+//    @Test
+//    public void makeBodyFromChatrooms() {
+//        JSONArray jsonArray = new JSONArray();
+//        List<Chatroom> chatroomList = new ArrayList<>();
+//        for (int i = 0; i < 10; ++i) {
+//            Chatroom chatroom = new Chatroom();
+//            chatroom.setChatroomname(randomStringGenerator.nextRandomString(20));
+//            chatroom.setChatroomid(randomStringGenerator.nextRandomInt());
+//            chatroomList.add(i, chatroom);
+//        }
+//        
+//        
+//        for (int i = 0; i < chatroomList.size(); ++i) {
+//            Chatroom tempChatroom = chatroomList.get(i);
+//            JSONObject jsonObject = new JSONObject();
+//            jsonObject.put("chatroomname", tempChatroom.getChatroomname());
+//            jsonObject.put("chatroomid", tempChatroom.getChatroomid());
+//            jsonArray.add(i, jsonObject);
+//        }
+//        System.out.println(jsonArray.toJSONString());
+//    }
 
     @Test
     public void testInsertOperation() {
-        User user = dao.addUser("QOWIERYQWOasdfasfdIERUYQWR");
-        Chatroom chatroom = dao.addChatRoom("THISISCHATROOM!!!!!!", user.getUserid());
-        System.out.println(chatroom.getChatroomid() + " : " + chatroom.getUserid());
+        dao.postMessage(1, 2, 1, "THISISTEST");
+        dao.postMessage(1, 2, 1, "THISISTEST");
+        dao.postMessage(1, 2, 1, "THISISTEST");
+        dao.postMessage(1, 2, 1, "THISISTEST");
+        dao.postMessage(1, 2, 1, "THISISTEST");
     }
 
     @After
