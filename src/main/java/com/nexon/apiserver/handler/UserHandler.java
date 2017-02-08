@@ -55,10 +55,10 @@ public class UserHandler implements HttpHandler {
         String[] pathVariables = pathVariable.split("/");
         switch (request) {
             case HttpMethod.GET:
+                
                 if (pathVariables[pathVariables.length - 1].contains("chatrooms")) {
                     List<Chatroom> chatrooms = dao.getChatRoomByUserid(Integer.parseInt(pathVariables[0]));
                     response = MappingUtils.makeBodyFromChatrooms(chatrooms).toJSONString();
-                    System.out.println(response);
                     sendResponse(httpExchange, response);
                 }
                 
@@ -74,8 +74,8 @@ public class UserHandler implements HttpHandler {
                 break;
             case HttpMethod.PUT:
                 user = parseBodyToUser(httpExchange.getRequestBody());
-                
-                if (dao.getUser(user.getUserid()).getUserid() != 0) {
+
+                if (dao.getUser(user.getNickname()).getUserid() != 0) {
                     sendErrorResponse(httpExchange, 409, ALREADY_EXIST);
                     break;
                 }

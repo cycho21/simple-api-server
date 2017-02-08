@@ -12,6 +12,7 @@ public class SimpleSqliteTemplate {
     public static final int CHATROOM = 1;
     public static final int CHATROOMS = 2;
     public static final int CHAT = 3;
+    public static final int CHATROOMUSER = 4;
 
     private Connection connection;
     private String testFileName;
@@ -73,7 +74,6 @@ public class SimpleSqliteTemplate {
                 }
             case CHATROOMS:
                 List<Chatroom> chatroomList = new ArrayList<Chatroom>();
-
                 try {
                     while (resultSet.next()) {
                         Chatroom tempchatroom = new Chatroom();
@@ -85,6 +85,18 @@ public class SimpleSqliteTemplate {
                     e.printStackTrace();
                 }
                 return chatroomList;
+            case CHATROOMUSER:
+                ArrayList<User> userList = new ArrayList<>();
+                try {
+                    while (resultSet.next()) {
+                        user = new User();
+                        user.setUserid(resultSet.getInt("userid"));
+                        userList.add(user);
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                return userList;
         }
         return null;
     }

@@ -14,6 +14,7 @@ public class Response {
     private User user;
     private Chatroom chatroom;
     private ArrayList<Chatroom> chatroomArrayList;
+    private ArrayList<User> userArrayList;
 
     public Response() {
         this.user = new User();
@@ -31,6 +32,14 @@ public class Response {
 
     public void setChatroomArrayList(ArrayList<Chatroom> chatroomArrayList) {
         this.chatroomArrayList = chatroomArrayList;
+    }
+
+    public ArrayList<User> getUserArrayList() {
+        return userArrayList;
+    }
+
+    public void setUserArrayList(ArrayList<User> userArrayList) {
+        this.userArrayList = userArrayList;
     }
 
     public int getStatusCode() {
