@@ -9,14 +9,6 @@ public class Message {
     private int messageid = 0;
     private String messageBody = null;
     private int chatroomid = 0;
-
-    public Message(int senderid, int receiverid, int messageid, int chatroomid, String messageBody) {
-        this.senderid = senderid;
-        this.receiverid = receiverid;
-        this.messageid = messageid;
-        this.messageBody = messageBody;
-        this.chatroomid = chatroomid;
-    }
     
     public Message() {
     }

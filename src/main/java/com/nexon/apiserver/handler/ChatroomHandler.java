@@ -4,9 +4,9 @@ import com.nexon.apiserver.dao.Chatroom;
 import com.nexon.apiserver.dao.Dao;
 import com.nexon.apiserver.dao.Message;
 import com.nexon.apiserver.dao.User;
-import com.nexon.apiserver.utils.SimpleMapper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import org.apache.log4j.Logger;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
@@ -23,6 +23,7 @@ public class ChatroomHandler implements HttpHandler {
     private static final String NOT_YOURS = "Request chatroom was not make by you.";
     private static final String NOT_JOINED = "You are not joined that room.";
 
+    private Logger logger = Logger.getLogger(ChatroomHandler.class);
     private ResponseSender responseSender;
     private JSONParser jsonParser;
     private Dao dao;
@@ -41,6 +42,9 @@ public class ChatroomHandler implements HttpHandler {
         Pattern pattern = Pattern.compile("(?<=/chatrooms/).+$");
         Matcher matcher = pattern.matcher(path);
         boolean hasPathVariable = matcher.find();
+
+        logger.info(":: UserHandler handle request :: URI : " + httpExchange.getRequestURI());
+        logger.info(":: Requestmethod : " + httpExchange.getRequestMethod() + " ::");
         
         if (hasPathVariable == true)
             handlePathVariableUri(httpExchange, matcher.group());

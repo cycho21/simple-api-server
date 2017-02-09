@@ -1,6 +1,7 @@
 package com.nexon.apiserver.dao;
 
-import java.lang.reflect.Array;
+import org.apache.log4j.Logger;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
  */
 public class Dao {
     private SimpleSqliteTemplate simpleTemplate;
+    private Logger logger = Logger.getLogger(Dao.class);
 
     public Dao() {
     }
@@ -25,6 +27,7 @@ public class Dao {
         createChatroomTable();
         createChatroomSnapShotTable();
         createChatTable();
+        logger.info("Data Access Object initialized...");
     }
 
 
@@ -96,7 +99,7 @@ public class Dao {
             preparedStatement.setString(1, nickname);
             userid = simpleTemplate.executeUpdate(preparedStatement);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error while setPreparedStatement binding variable.");
         }
 
         return userid;
@@ -111,7 +114,7 @@ public class Dao {
             preparedStatement.setInt(1, userid);
             preparedStatement.setInt(2, chatroomid);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error while setPreparedStatement binding variable.");
         }
         simpleTemplate.executeUpdate(preparedStatement);
 
@@ -123,7 +126,7 @@ public class Dao {
         try {
             preparedStatement.setString(1, nickname);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error while setPreparedStatement binding variable.");
         }
 
         User user = (User) simpleTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.USER);
@@ -161,9 +164,10 @@ public class Dao {
             e.printStackTrace();
         }
         message = (Message) simpleTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.CHAT);
+        message.setMessageid(messageid);
         return message;
     }
-    
+
     public ArrayList<Message> getMessagesByUserId(int chatroomid, int userid) {
         ArrayList<Message> messageList;
         String query = new StringBuilder()
@@ -176,9 +180,9 @@ public class Dao {
             preparedStatement.setInt(2, userid);
             preparedStatement.setInt(3, userid);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error while setPreparedStatement binding variable.");
         }
-        
+
         messageList = (ArrayList<Message>) simpleTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.CHATS);
         return messageList;
     }
@@ -206,7 +210,7 @@ public class Dao {
                 preparedStatement.setInt(2, userid);
                 simpleTemplate.executeUpdate(preparedStatement);
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error("Error while setPreparedStatement binding variable.");
             }
         } else {
             return null;
@@ -222,7 +226,7 @@ public class Dao {
         try {
             preparedStatement.setInt(1, userid);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error while setPreparedStatement binding variable.");
         }
         simpleTemplate.executeUpdate(preparedStatement);
     }
@@ -236,7 +240,7 @@ public class Dao {
             preparedStatement.setInt(2, userid);
             chatroomid = simpleTemplate.executeUpdate(preparedStatement);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error while setPreparedStatement binding variable.");
         }
 
         return chatroomid;
@@ -248,7 +252,7 @@ public class Dao {
         try {
             preparedStatement.setString(1, chatroomname);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error while setPreparedStatement binding variable.");
         }
         Chatroom chatroom = (Chatroom) simpleTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.CHATROOM);
         chatroom.setChatroomname(chatroomname);
@@ -261,7 +265,7 @@ public class Dao {
         try {
             preparedStatement.setInt(1, chatroomid);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error while setPreparedStatement binding variable.");
         }
         Chatroom chatroom = (Chatroom) simpleTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.CHATROOM);
         chatroom.setChatroomid(chatroomid);
@@ -278,7 +282,7 @@ public class Dao {
         try {
             preparedStatement.setInt(1, userid);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error while setPreparedStatement binding variable.");
         }
 
         List<Chatroom> chatroomList = (List<Chatroom>) simpleTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.CHATROOMS);
@@ -294,7 +298,7 @@ public class Dao {
             preparedStatement.setInt(2, userid);
             chatroomid = simpleTemplate.executeUpdate(preparedStatement);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error while setPreparedStatement binding variable.");
         }
 
         return chatroomid;
@@ -307,7 +311,7 @@ public class Dao {
             preparedStatement.setInt(1, userid);
             preparedStatement.setInt(2, chatroomid);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error while setPreparedStatement binding variable.");
         }
         simpleTemplate.executeUpdate(preparedStatement);
     }
@@ -318,9 +322,9 @@ public class Dao {
         try {
             preparedStatement.setInt(1, chatroomid);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error while setPreparedStatement binding variable.");
         }
-        
+
         ArrayList<User> users = (ArrayList<User>) simpleTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.CHATROOMUSER);
 
         for (User us : users) {

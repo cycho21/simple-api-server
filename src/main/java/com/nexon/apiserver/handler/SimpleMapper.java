@@ -1,4 +1,4 @@
-package com.nexon.apiserver.utils;
+package com.nexon.apiserver.handler;
 
 import com.nexon.apiserver.dao.Chatroom;
 import com.nexon.apiserver.dao.Message;

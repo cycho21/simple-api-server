@@ -1,6 +1,7 @@
 package com.nexon.apiserver.dao;
 
-import javax.xml.transform.Result;
+import org.apache.log4j.Logger;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +15,9 @@ public class SimpleSqliteTemplate {
     public static final int CHATROOMS = 2;
     public static final int CHAT = 3;
     public static final int CHATROOMUSER = 4;
-    public static final int LAST_INSERT_ID = 5;
     public static final int CHATS = 6;
 
+    private Logger logger = Logger.getLogger(SimpleSqliteTemplate.class);
     private Connection connection;
     private String testFileName;
 
@@ -35,7 +36,6 @@ public class SimpleSqliteTemplate {
         try {
             preparedStatement.executeUpdate();
             last_insert_rowid = preparedStatement.getGeneratedKeys().getInt("last_insert_rowid()");
-//            System.out.println(" :: Execute Update Query Success :: ");
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -108,22 +108,13 @@ public class SimpleSqliteTemplate {
                 try {
                     message.setSenderid(resultSet.getInt("senderid"));
                     message.setReceiverid(resultSet.getInt("receiverid"));
-                    message.setMessageid(resultSet.getInt("chatroomid"));
+                    message.setChatroomid(resultSet.getInt("chatroomid"));
                     message.setMessageBody(resultSet.getString("messagebody"));
                 } catch (SQLException e) {
                     message = new Message();
                     return message;
                 }
                 return message;
-            case LAST_INSERT_ID:
-                int lastid = -1;
-                try {
-                    System.out.println(resultSet.getMetaData().getColumnCount());
-                    System.out.println(resultSet.getMetaData().getColumnName(1));
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                return lastid;
             case CHATS:
                 List<Message> messageList = new ArrayList<>();
                 try {
@@ -149,7 +140,6 @@ public class SimpleSqliteTemplate {
         ResultSet rs = null;
         try {
             rs = preparedStatement.executeQuery();
-//            System.out.println(" :: Execute Query Success :: ");
             return resultSetToObject(rs, type);
         } catch (SQLException e) {
             return new User(null, 0);
@@ -181,7 +171,7 @@ public class SimpleSqliteTemplate {
     public PreparedStatement preparedStatement(String preparedQuery) {
         openDb();
         try {
-            System.out.println(preparedQuery);
+            logger.info("PreparedStatement :: " + preparedQuery);
             PreparedStatement preparedStatement = this.makeConnection().prepareStatement(preparedQuery);
             return preparedStatement;
         } catch (SQLException e) {
