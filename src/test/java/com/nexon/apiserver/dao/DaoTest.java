@@ -21,6 +21,7 @@ public class DaoTest {
     @Before
     public void setUp() {
         this.dao = new Dao();
+        dao.initialize();
         this.randomStringGenerator = new RandomStringGenerator();
         randomStringGenerator.initialize();
 //        dao.createUsersTable();

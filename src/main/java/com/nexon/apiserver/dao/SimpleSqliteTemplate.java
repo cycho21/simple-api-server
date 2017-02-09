@@ -15,6 +15,7 @@ public class SimpleSqliteTemplate {
     public static final int CHAT = 3;
     public static final int CHATROOMUSER = 4;
     public static final int LAST_INSERT_ID = 5;
+    public static final int CHATS = 6;
 
     private Connection connection;
     private String testFileName;
@@ -30,7 +31,7 @@ public class SimpleSqliteTemplate {
 
     public int executeUpdate(PreparedStatement preparedStatement) {
         int last_insert_rowid = -1;
-        
+
         try {
             preparedStatement.executeUpdate();
             last_insert_rowid = preparedStatement.getGeneratedKeys().getInt("last_insert_rowid()");
@@ -103,7 +104,17 @@ public class SimpleSqliteTemplate {
                 }
                 return userList;
             case CHAT:
-                break;
+                Message message = new Message();
+                try {
+                    message.setSenderid(resultSet.getInt("senderid"));
+                    message.setReceiverid(resultSet.getInt("receiverid"));
+                    message.setMessageid(resultSet.getInt("chatroomid"));
+                    message.setMessageBody(resultSet.getString("messagebody"));
+                } catch (SQLException e) {
+                    message = new Message();
+                    return message;
+                }
+                return message;
             case LAST_INSERT_ID:
                 int lastid = -1;
                 try {
@@ -113,6 +124,22 @@ public class SimpleSqliteTemplate {
                     e.printStackTrace();
                 }
                 return lastid;
+            case CHATS:
+                List<Message> messageList = new ArrayList<>();
+                try {
+                    while (resultSet.next()) {
+                        message = new Message();
+                        message.setSenderid(resultSet.getInt("senderid"));
+                        message.setReceiverid(resultSet.getInt("receiverid"));
+                        message.setMessageid(resultSet.getInt("messageid"));
+                        message.setMessageBody(resultSet.getString("messagebody"));
+                        messageList.add(message);
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                return messageList;
+
         }
         return null;
     }
@@ -161,5 +188,19 @@ public class SimpleSqliteTemplate {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public boolean isExistColumn(ResultSet resultSet, String columnName) {
+        boolean result = false;
+
+        try {
+            for (int i = 0; i < resultSet.getMetaData().getColumnCount(); ++i) {
+                if (columnName.equals(resultSet.getMetaData().getColumnName(i)))
+                    result = true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }

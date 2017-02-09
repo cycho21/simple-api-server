@@ -3,13 +3,11 @@ package com.nexon.apiserver.handler;
 import com.nexon.apiserver.dao.Chatroom;
 import com.nexon.apiserver.dao.Dao;
 import com.nexon.apiserver.dao.User;
-import com.nexon.apiserver.utils.MappingUtils;
-import com.nexon.apiserver.utils.NicknameValidator;
+import com.nexon.apiserver.utils.SimpleMapper;
+import com.nexon.apiserver.dao.NicknameValidator;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.util.List;
@@ -24,12 +22,17 @@ public class UserHandler implements HttpHandler {
     private static final String LONGER_THAN_TWENTY = "Nickname must less than 20 characters.";
     private static final String NO_USER = "There is no user that you request.";
     private static final String ALREADY_EXIST = "Request name is already exists.";
+    
+    private SimpleMapper mapper;
     private NicknameValidator nicknameValidator;
     private JSONParser jsonParser;
     private Dao dao;
+    private ResponseSender responseSender;
 
-    public UserHandler(Dao dao) {
+    public UserHandler(Dao dao, ResponseSender responseSender, SimpleMapper mapper) {
+        this.mapper = mapper;
         this.dao = dao;
+        this.responseSender = responseSender;
         this.jsonParser = new JSONParser();
         this.nicknameValidator = new NicknameValidator();
     }
@@ -58,49 +61,50 @@ public class UserHandler implements HttpHandler {
                 
                 if (pathVariables[pathVariables.length - 1].contains("chatrooms")) {
                     List<Chatroom> chatrooms = dao.getChatRoomByUserid(Integer.parseInt(pathVariables[0]));
-                    response = MappingUtils.makeBodyFromChatrooms(chatrooms).toJSONString();
-                    sendResponse(httpExchange, response);
+                    response = mapper.makeBodyFromChatrooms(chatrooms).toJSONString();
+                    responseSender.sendResponse(httpExchange, response);
                 }
                 
                 user = dao.getUser(Integer.parseInt(pathVariable, 10));
                 
                 if (user.getNickname() != null) {
-                    response = makeBodyFromUser(user).toJSONString();
-                    sendResponse(httpExchange, response);
+                    response = mapper.makeBodyFromUser(user).toJSONString();
+                    responseSender.sendResponse(httpExchange, response);
                 } else {
-                    sendErrorResponse(httpExchange, 404, "Not Found");
+                    responseSender.sendErrorResponse(httpExchange, 404, "Not Found");
                 }
                 
                 break;
             case HttpMethod.PUT:
-                user = parseBodyToUser(httpExchange.getRequestBody());
-
+                user = mapper.parseBodyToUser(httpExchange.getRequestBody());
+                
                 if (dao.getUser(user.getNickname()).getUserid() != 0) {
-                    sendErrorResponse(httpExchange, 409, ALREADY_EXIST);
+                    responseSender.sendErrorResponse(httpExchange, 409, ALREADY_EXIST);
                     break;
                 }
                 
+
                 switch (nicknameValidator.isValidateName(user.getNickname())) {
                     case NicknameValidator.ALPHA_NUMERIC:
                         dao.updateUser(Integer.parseInt(pathVariable, 10), user.getNickname());
                         user = dao.getUser(Integer.parseInt(pathVariable, 10));
-                        response = makeBodyFromUser(user).toJSONString();
-                        sendResponse(httpExchange, response);
+                        response = mapper.makeBodyFromUser(user).toJSONString();
+                        responseSender.sendResponse(httpExchange, response);
                         break;
                     case NicknameValidator.LONGER_THAN_TWENTY:
-                        sendErrorResponse(httpExchange, 400, LONGER_THAN_TWENTY);
+                        responseSender.sendErrorResponse(httpExchange, 400, LONGER_THAN_TWENTY);
                         break;
                     case NicknameValidator.SPECIAL_LETTER:
-                        sendErrorResponse(httpExchange, 400, SPECIAL_LETTER);
+                        responseSender.sendErrorResponse(httpExchange, 400, SPECIAL_LETTER);
                         break;
                 }
                 break;
             case HttpMethod.DELETE:
                 if (dao.getUser(Integer.parseInt(pathVariable, 10)).getUserid() != 0) {
                     dao.deleteUser(Integer.parseInt(pathVariable, 10));
-                    sendResponse(httpExchange, response);
+                    responseSender.sendResponse(httpExchange, response);
                 } else {
-                    sendErrorResponse(httpExchange, 400, NO_USER);
+                    responseSender.sendErrorResponse(httpExchange, 400, NO_USER);
                 }
                 break;
         }
@@ -113,110 +117,32 @@ public class UserHandler implements HttpHandler {
             case HttpMethod.GET:
                 break;
             case HttpMethod.POST:
-                User user = parseBodyToUser(httpExchange.getRequestBody());
+                User user = mapper.parseBodyToUser(httpExchange.getRequestBody());
                 
                 if (dao.getUser(user.getNickname()).getUserid() != 0) {
-                    sendErrorResponse(httpExchange, 409, ALREADY_EXIST);
+                    responseSender.sendErrorResponse(httpExchange, 409, ALREADY_EXIST);
                     break;
                 }
                 
                 int code = nicknameValidator.isValidateName(user.getNickname());
                 switch (code) {
                     case NicknameValidator.SPECIAL_LETTER:
-                        sendErrorResponse(httpExchange, 400, SPECIAL_LETTER);
+                        responseSender.sendErrorResponse(httpExchange, 400, SPECIAL_LETTER);
                         break;
                     case NicknameValidator.LONGER_THAN_TWENTY:
-                        sendErrorResponse(httpExchange, 400, LONGER_THAN_TWENTY);
+                        responseSender.sendErrorResponse(httpExchange, 400, LONGER_THAN_TWENTY);
                         break;
                     case NicknameValidator.ALPHA_NUMERIC:
-                        User retUser = dao.addUser(user.getNickname());
-                        String response = makeBodyFromUser(retUser).toJSONString();
-                        sendResponse(httpExchange, response);
+                        User retUser = new User();
+                        int userid = dao.addUser(user.getNickname());
+                        retUser.setUserid(userid);
+                        retUser.setNickname(user.getNickname());
+                        String response = mapper.makeBodyFromUser(retUser).toJSONString();
+                        responseSender.sendResponse(httpExchange, response);
                         break;
                 }
                 break;
         }
     }
 
-    private void sendErrorResponse(HttpExchange httpExchange, int statusCode, String detail) {
-        OutputStream outputStream = null;
-        try {
-            httpExchange.sendResponseHeaders(statusCode, detail.length());
-            outputStream = httpExchange.getResponseBody();
-            outputStream.write(detail.getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                outputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void sendResponse(HttpExchange httpExchange, String response) {
-        OutputStream outputStream = null;
-        try {
-            httpExchange.sendResponseHeaders(200, response.length());
-            outputStream = httpExchange.getResponseBody();
-            outputStream.write(response.getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                outputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private JSONObject makeBodyFromUser(User retUser) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("nickname", retUser.getNickname());
-        jsonObject.put("userid", retUser.getUserid());
-        return jsonObject;
-    }
-
-    private User parseBodyToUser(InputStream requestBody) {
-        User user = new User();
-        try {
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(getJsonFromBody(requestBody));
-            user.setNickname((String) jsonObject.get("nickname"));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return user;
-    }
-
-    public String getJsonFromBody(InputStream requestBody) {
-        InputStreamReader inputStreamReader = null;
-        BufferedReader bufferedReader = null;
-        StringBuilder stringBuilder = null;
-        try {
-            inputStreamReader = new InputStreamReader(requestBody, "utf-8");
-            bufferedReader = new BufferedReader(inputStreamReader);
-
-            stringBuilder = new StringBuilder();
-            String tempStr = "";
-
-            while ((tempStr = bufferedReader.readLine()) != null) {
-                stringBuilder.append(tempStr);
-            }
-
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                bufferedReader.close();
-                inputStreamReader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return stringBuilder.toString();
-    }
 }

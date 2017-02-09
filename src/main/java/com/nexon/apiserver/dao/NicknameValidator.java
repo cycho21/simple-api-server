@@ -1,4 +1,4 @@
-package com.nexon.apiserver.utils;
+package com.nexon.apiserver.dao;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -1,7 +1,9 @@
 package com.nexon.apiserver;
 
 import com.nexon.apiserver.dao.Chatroom;
+import com.nexon.apiserver.dao.Message;
 import com.nexon.apiserver.dao.User;
+import sun.misc.resources.Messages_es;
 
 import java.util.ArrayList;
 
@@ -13,12 +15,15 @@ public class Response {
     private int statusCode;
     private User user;
     private Chatroom chatroom;
+    private Message message;
     private ArrayList<Chatroom> chatroomArrayList;
     private ArrayList<User> userArrayList;
+    private ArrayList<Message> messagesArrayList;
 
     public Response() {
         this.user = new User();
         this.chatroom = new Chatroom();
+        this.message = new Message();
     }
     
     public Response(int statusCode) {
@@ -52,6 +57,22 @@ public class Response {
 
     public User getUser() {
         return user;
+    }
+
+    public Message getMessage() {
+        return message;
+    }
+
+    public void setMessage(Message message) {
+        this.message = message;
+    }
+
+    public ArrayList<Message> getMessagesArrayList() {
+        return messagesArrayList;
+    }
+
+    public void setMessagesArrayList(ArrayList<Message> messagesArrayList) {
+        this.messagesArrayList = messagesArrayList;
     }
 
     public void setUser(User user) {

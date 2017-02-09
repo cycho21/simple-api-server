@@ -1,5 +1,6 @@
 package com.nexon.apiserver.dao;
 
+import java.lang.reflect.Array;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,10 +10,13 @@ import java.util.List;
  * Created by Administrator on 2017-02-04.
  */
 public class Dao {
-    private final SimpleSqliteTemplate jdbcTemplate;
+    private SimpleSqliteTemplate simpleTemplate;
 
     public Dao() {
-        this.jdbcTemplate = new SimpleSqliteTemplate();
+    }
+
+    public void initialize() {
+        this.simpleTemplate = new SimpleSqliteTemplate();
         dropUsersTable();
         dropChatroomTable();
         dropChatroomSnapShotTable();
@@ -25,104 +29,113 @@ public class Dao {
 
 
     private void dropChatTable() {
-        jdbcTemplate.executeUpdate(jdbcTemplate.preparedStatement("DROP TABLE messages;"));
+        simpleTemplate.executeUpdate(simpleTemplate.preparedStatement("DROP TABLE IF EXISTS messages;"));
     }
 
     private void dropChatroomSnapShotTable() {
-        jdbcTemplate.executeUpdate(jdbcTemplate.preparedStatement("DROP TABLE chatroomssnapshot;"));
+        simpleTemplate.executeUpdate(simpleTemplate.preparedStatement("DROP TABLE IF EXISTS chatroomssnapshot;"));
     }
 
     private void dropChatroomTable() {
-        jdbcTemplate.executeUpdate(jdbcTemplate.preparedStatement("DROP TABLE chatrooms;"));
+        simpleTemplate.executeUpdate(simpleTemplate.preparedStatement("DROP TABLE IF EXISTS chatrooms;"));
     }
 
     public void dropUsersTable() {
-        jdbcTemplate.executeUpdate(jdbcTemplate.preparedStatement("DROP TABLE users"));
+        simpleTemplate.executeUpdate(simpleTemplate.preparedStatement("DROP TABLE IF EXISTS users"));
     }
-        
+
     private void createChatTable() {
-        String query = "CREATE TABLE messages (messageid INTEGER PRIMARY KEY, " +
-                "chatroomid INTEGER," +
-                "senderid INTEGER," +
-                "receiverid INTEGER," +
-                "messagebody VARCHAR(100) not NULL);";
-        jdbcTemplate.executeUpdate(jdbcTemplate.preparedStatement(query));
+        String query = new StringBuilder()
+                .append("CREATE TABLE IF NOT EXISTS messages (messageid INTEGER PRIMARY KEY, ")
+                .append("chatroomid INTEGER,")
+                .append("senderid INTEGER,")
+                .append("receiverid INTEGER,")
+                .append("messagebody VARCHAR(100) not NULL);").toString();
+        simpleTemplate.executeUpdate(simpleTemplate.preparedStatement(query));
     }
 
     private void createChatroomSnapShotTable() {
-        jdbcTemplate.executeUpdate(jdbcTemplate.preparedStatement("CREATE TABLE chatroomssnapshot " +
-                "(userid INTEGER," +
-                "chatroomid INTEGER);"));
+        String query = new StringBuilder()
+                .append("CREATE TABLE IF NOT EXISTS chatroomssnapshot ")
+                .append("(userid INTEGER,")
+                .append("chatroomid INTEGER);")
+                .toString();
+        simpleTemplate.executeUpdate(simpleTemplate.preparedStatement(query));
     }
 
     public void createUsersTable() {
-        jdbcTemplate.executeUpdate(jdbcTemplate.preparedStatement("CREATE TABLE users " +
-                "(userid INTEGER PRIMARY KEY," +
-                "nickname VARACHAR(20) not NULL);"));
+        String query = new StringBuilder()
+                .append("CREATE TABLE IF NOT EXISTS users ")
+                .append("(userid INTEGER PRIMARY KEY,")
+                .append("nickname VARACHAR(20) not NULL);").toString();
+        simpleTemplate.executeUpdate(simpleTemplate.preparedStatement(query));
     }
 
     public void createChatroomTable() {
-        jdbcTemplate.executeUpdate(jdbcTemplate.preparedStatement("CREATE TABLE chatrooms " +
-                "(chatroomid INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "userid INTEGER," +
-                "chatroomname VARCHAR(100) not NULL);"));
+        String query = new StringBuilder()
+                .append("CREATE TABLE IF NOT EXISTS chatrooms ")
+                .append("(chatroomid INTEGER PRIMARY KEY AUTOINCREMENT,")
+                .append("userid INTEGER,")
+                .append("chatroomname VARCHAR(100) not NULL);").toString();
+        PreparedStatement preparedStatement = simpleTemplate.preparedStatement(query);
+        simpleTemplate.executeUpdate(preparedStatement);
     }
 
-    public User addUser(String nickname) {
+    public int addUser(String nickname) {
         if (getUser(nickname).getUserid() != 0) {
             System.out.println("Nickname exists!");
-            return null;
+            return -1;
         }
 
-        PreparedStatement preparedStatement = jdbcTemplate.preparedStatement("INSERT INTO users " +
-                "(nickname) values (?);");
+        String query = new StringBuilder()
+                .append("INSERT INTO users ")
+                .append("(nickname) values (?);").toString();
+        PreparedStatement preparedStatement = simpleTemplate.preparedStatement(query);
+        int userid = -1;
         try {
             preparedStatement.setString(1, nickname);
-            jdbcTemplate.executeUpdate(preparedStatement);
+            userid = simpleTemplate.executeUpdate(preparedStatement);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        preparedStatement = jdbcTemplate.preparedStatement("SELECT userid FROM users WHERE nickname=?;");
-        try {
-            preparedStatement.setString(1, nickname);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        User user = (User) jdbcTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.USER);
-        user.setNickname(nickname);
-        return user;
+        return userid;
     }
 
     public void joinChatroom(int userid, int chatroomid) {
-        PreparedStatement preparedStatement = jdbcTemplate.preparedStatement("INSERT INTO chatroomssnapshot " +
-                "(userid, chatroomid) values(?, ?);");
+        String query = new StringBuilder()
+                .append("INSERT INTO chatroomssnapshot ")
+                .append("(userid, chatroomid) values(?, ?);").toString();
+        PreparedStatement preparedStatement = simpleTemplate.preparedStatement(query);
         try {
             preparedStatement.setInt(1, userid);
             preparedStatement.setInt(2, chatroomid);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        jdbcTemplate.executeUpdate(preparedStatement);
+        simpleTemplate.executeUpdate(preparedStatement);
 
     }
 
     public User getUser(String nickname) {
-        PreparedStatement preparedStatement = jdbcTemplate.preparedStatement("SELECT userid FROM users WHERE nickname=?;");
+        String query = "SELECT userid FROM users WHERE nickname=?;";
+        PreparedStatement preparedStatement = simpleTemplate.preparedStatement(query);
         try {
             preparedStatement.setString(1, nickname);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        User user = (User) jdbcTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.USER);
+        User user = (User) simpleTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.USER);
         user.setNickname(nickname);
         return user;
     }
-    
-    public Message postMessage(int senderid, int receiverid, int chatroomid, String messageBody) {
-        PreparedStatement preparedStatement = jdbcTemplate.preparedStatement("INSERT INTO messages " +
-                "(senderid, receiverid, chatroomid, messagebody) values(?, ?, ?, ?)");
+
+    public int postMessage(int senderid, int receiverid, int chatroomid, String messageBody) {
+        String query = new StringBuilder()
+                .append("INSERT INTO messages ")
+                .append("(senderid, receiverid, chatroomid, messagebody) values(?, ?, ?, ?);").toString();
+        PreparedStatement preparedStatement = simpleTemplate.preparedStatement(query);
         try {
             preparedStatement.setInt(1, senderid);
             preparedStatement.setInt(2, receiverid);
@@ -131,48 +144,67 @@ public class Dao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        int messageid = jdbcTemplate.executeUpdate(preparedStatement);
-        
-        System.out.println(messageid);
-        return null;
+        int messageid = simpleTemplate.executeUpdate(preparedStatement);
+        return messageid;
     }
-    
-    public Message getMessage(int messageid) {
+
+    public Message checkMessage(int messageid) {
         Message message = new Message();
-        String query = "SELECT senderid, receiverid, chatroomid, messagebody " +
-                "FROM messages " +
-                "WHERE messageid=?;";
-        PreparedStatement preparedStatement = jdbcTemplate.preparedStatement(query);
+        String query = new StringBuilder()
+                .append("SELECT senderid, receiverid, chatroomid, messagebody ")
+                .append("FROM messages ")
+                .append("WHERE messageid=?;").toString();
+        PreparedStatement preparedStatement = simpleTemplate.preparedStatement(query);
         try {
             preparedStatement.setInt(1, messageid);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        jdbcTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.CHAT);
-
+        message = (Message) simpleTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.CHAT);
         return message;
+    }
+    
+    public ArrayList<Message> getMessagesByUserId(int chatroomid, int userid) {
+        ArrayList<Message> messageList;
+        String query = new StringBuilder()
+                .append("SELECT senderid, receiverid, messageid, messagebody ")
+                .append("FROM messages ")
+                .append("WHERE chatroomid=? AND (senderid=? OR receiverid=?);").toString();
+        PreparedStatement preparedStatement = simpleTemplate.preparedStatement(query);
+        try {
+            preparedStatement.setInt(1, chatroomid);
+            preparedStatement.setInt(2, userid);
+            preparedStatement.setInt(3, userid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        messageList = (ArrayList<Message>) simpleTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.CHATS);
+        return messageList;
     }
 
     public User getUser(int userid) {
-        PreparedStatement preparedStatement = jdbcTemplate.preparedStatement("SELECT nickname FROM users WHERE userid=?;");
+        String query = "SELECT nickname FROM users WHERE userid=?;";
+        PreparedStatement preparedStatement = simpleTemplate.preparedStatement(query);
         try {
             preparedStatement.setInt(1, userid);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        User user = (User) jdbcTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.USER);
+        User user = (User) simpleTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.USER);
         if (user.getNickname() != null)
             user.setUserid(userid);
         return user;
     }
 
     public User updateUser(int userid, String nickname) {
+        String query = "UPDATE users SET nickname=? WHERE userid=?;";
         if (getUser(userid).getUserid() != 0) {
-            PreparedStatement preparedStatement = jdbcTemplate.preparedStatement("UPDATE users SET nickname=? WHERE userid=?;");
+            PreparedStatement preparedStatement = simpleTemplate.preparedStatement(query);
             try {
                 preparedStatement.setString(1, nickname);
                 preparedStatement.setInt(2, userid);
-                jdbcTemplate.executeUpdate(preparedStatement);
+                simpleTemplate.executeUpdate(preparedStatement);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -185,104 +217,117 @@ public class Dao {
     }
 
     public void deleteUser(int userid) {
-        PreparedStatement preparedStatement = jdbcTemplate.preparedStatement("DELETE FROM users WHERE userid=?;");
+        String query = "DELETE FROM users WHERE userid=?;";
+        PreparedStatement preparedStatement = simpleTemplate.preparedStatement(query);
         try {
             preparedStatement.setInt(1, userid);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        jdbcTemplate.executeUpdate(preparedStatement);
+        simpleTemplate.executeUpdate(preparedStatement);
     }
 
-    public Chatroom addChatRoom(String chatroomname, int userid) {
-        PreparedStatement preparedStatement = jdbcTemplate.preparedStatement("INSERT INTO chatrooms (chatroomname, userid) values (?, ?);");
+    public int addChatRoom(String chatroomname, int userid) {
+        String query = "INSERT INTO chatrooms (chatroomname, userid) values (?, ?);";
+        PreparedStatement preparedStatement = simpleTemplate.preparedStatement(query);
+        int chatroomid = -1;
         try {
             preparedStatement.setString(1, chatroomname);
             preparedStatement.setInt(2, userid);
-            jdbcTemplate.executeUpdate(preparedStatement);
+            chatroomid = simpleTemplate.executeUpdate(preparedStatement);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return getChatRoom(chatroomname);
+
+        return chatroomid;
     }
 
-    public Chatroom getChatRoom(String chatroomname) {
-        PreparedStatement preparedStatement = jdbcTemplate.preparedStatement("SELECT chatroomid, userid FROM chatrooms WHERE chatroomname=?;");
+    public Chatroom getChatRoomByNameById(String chatroomname) {
+        String query = "SELECT chatroomid, userid FROM chatrooms WHERE chatroomname=?;";
+        PreparedStatement preparedStatement = simpleTemplate.preparedStatement(query);
         try {
             preparedStatement.setString(1, chatroomname);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        Chatroom chatroom = (Chatroom) jdbcTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.CHATROOM);
+        Chatroom chatroom = (Chatroom) simpleTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.CHATROOM);
         chatroom.setChatroomname(chatroomname);
         return chatroom;
     }
 
-    public Chatroom getChatRoom(int chatroomid) {
-        PreparedStatement preparedStatement = jdbcTemplate.preparedStatement("SELECT chatroomname, userid FROM chatrooms WHERE chatroomid=?;");
+    public Chatroom getChatRoomByNameById(int chatroomid) {
+        String query = "SELECT chatroomname, userid FROM chatrooms WHERE chatroomid=?;";
+        PreparedStatement preparedStatement = simpleTemplate.preparedStatement(query);
         try {
             preparedStatement.setInt(1, chatroomid);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        Chatroom chatroom = (Chatroom) jdbcTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.CHATROOM);
+        Chatroom chatroom = (Chatroom) simpleTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.CHATROOM);
         chatroom.setChatroomid(chatroomid);
         return chatroom;
     }
 
     public List<Chatroom> getChatRoomByUserid(int userid) {
-        PreparedStatement preparedStatement = jdbcTemplate.preparedStatement("SELECT chatrooms.chatroomid, chatrooms.chatroomname " +
-                "FROM chatrooms INNER JOIN chatroomssnapshot " +
-                "ON chatroomssnapshot.chatroomid = chatrooms.chatroomid " +
-                "WHERE chatroomssnapshot.userid=?;");
+        String query = new StringBuilder()
+                .append("SELECT chatrooms.chatroomid, chatrooms.chatroomname ")
+                .append("FROM chatrooms INNER JOIN chatroomssnapshot ")
+                .append("ON chatroomssnapshot.chatroomid = chatrooms.chatroomid ")
+                .append("WHERE chatroomssnapshot.userid=?;").toString();
+        PreparedStatement preparedStatement = simpleTemplate.preparedStatement(query);
         try {
             preparedStatement.setInt(1, userid);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        List<Chatroom> chatroomList = (List<Chatroom>) jdbcTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.CHATROOMS);
+        List<Chatroom> chatroomList = (List<Chatroom>) simpleTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.CHATROOMS);
         return chatroomList;
     }
 
-    public Chatroom updateChatroom(String chatroomname, int userid) {
-        PreparedStatement preparedStatement = jdbcTemplate.preparedStatement("UPDATE chatrooms SET chatroomname=? WHERE userid=?;");
+    public int updateChatroom(String chatroomname, int userid) {
+        String query = "UPDATE chatrooms SET chatroomname=? WHERE userid=?;";
+        PreparedStatement preparedStatement = simpleTemplate.preparedStatement(query);
+        int chatroomid = -1;
         try {
             preparedStatement.setString(1, chatroomname);
             preparedStatement.setInt(2, userid);
-            jdbcTemplate.executeUpdate(preparedStatement);
+            chatroomid = simpleTemplate.executeUpdate(preparedStatement);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        Chatroom tempRoom = getChatRoom(chatroomname);
-        
-        return new Chatroom(tempRoom.getChatroomname(), tempRoom.getChatroomid(), tempRoom.getUserid());
+
+        return chatroomid;
     }
 
     public void quitChatroom(int chatroomid, int userid) {
-        PreparedStatement preparedStatement = jdbcTemplate.preparedStatement("DELETE FROM chatroomssnapshot WHERE userid=? AND chatroomid=?;");
+        String query = "DELETE FROM chatroomssnapshot WHERE userid=? AND chatroomid=?;";
+        PreparedStatement preparedStatement = simpleTemplate.preparedStatement(query);
         try {
             preparedStatement.setInt(1, userid);
             preparedStatement.setInt(2, chatroomid);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        jdbcTemplate.executeUpdate(preparedStatement);
+        simpleTemplate.executeUpdate(preparedStatement);
     }
 
     public ArrayList<User> getChatroomJoiner(int chatroomid) {
-        PreparedStatement preparedStatement = jdbcTemplate.preparedStatement("SELECT userid FROM chatroomssnapshot WHERE chatroomid =?;");
+        String query = "SELECT userid FROM chatroomssnapshot WHERE chatroomid =?;";
+        PreparedStatement preparedStatement = simpleTemplate.preparedStatement(query);
         try {
             preparedStatement.setInt(1, chatroomid);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        ArrayList<User> users = (ArrayList<User>) jdbcTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.CHATROOMUSER);
         
+        ArrayList<User> users = (ArrayList<User>) simpleTemplate.executeQuery(preparedStatement, SimpleSqliteTemplate.CHATROOMUSER);
+
         for (User us : users) {
-            us.setNickname(getUser(us.getUserid()).getNickname());       
+            us.setNickname(getUser(us.getUserid()).getNickname());
         }
-        
+
         return users;
     }
+
 }

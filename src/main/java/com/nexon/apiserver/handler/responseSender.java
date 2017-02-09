@@ -1,4 +1,4 @@
-package com.nexon.apiserver.utils;
+package com.nexon.apiserver.handler;
 
 import com.sun.net.httpserver.HttpExchange;
 
@@ -10,7 +10,7 @@ import java.io.OutputStream;
  */
 public class ResponseSender {
 
-    public static synchronized void sendResponse(HttpExchange httpExchange, String response) {
+    public void sendResponse(HttpExchange httpExchange, String response) {
         OutputStream outputStream = null;
         try {
             httpExchange.sendResponseHeaders(200, response.length());
@@ -27,7 +27,7 @@ public class ResponseSender {
         }
     }
 
-    public static synchronized void sendErrorResponse(HttpExchange httpExchange, int statusCode, String detail) {
+    public void sendErrorResponse(HttpExchange httpExchange, int statusCode, String detail) {
         OutputStream outputStream = null;
         try {
             httpExchange.sendResponseHeaders(statusCode, detail.length());

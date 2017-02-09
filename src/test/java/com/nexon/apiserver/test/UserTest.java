@@ -3,20 +3,16 @@ package com.nexon.apiserver.test;
 import com.nexon.apiserver.Response;
 import com.nexon.apiserver.Server;
 import com.nexon.apiserver.dao.Chatroom;
+import com.nexon.apiserver.dao.Message;
 import com.nexon.apiserver.dao.User;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.lang.reflect.Array;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -31,22 +27,44 @@ import static org.junit.Assert.assertEquals;
  */
 public class UserTest {
 
-    private static final String HOST_URL = "http://localhost:";
-    private static final int PORT = 8000;
-    private static final String BASE_URL = "/api/v1/";
+    private static String HOST = "http://localhost:";
+    private static String BASE_URL = "/api/v1/";
+    private static int PORT = 0;
     private JSONParser jsonParser;
     private RandomStringGenerator randomStringGenerator;
     private Random random;
+    private String DEST = null;
 
     @Before
     public void startServer() {
         Server server = new Server();
-        server.start(PORT);
+        server.initialize();
+        server.start();
+        
         this.jsonParser = new JSONParser();
         this.randomStringGenerator = new RandomStringGenerator();
         this.random = new Random();
         randomStringGenerator.initialize();
+        initialize();
     }
+
+    private void initialize() {
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = (JSONObject) jsonParser.parse(new FileReader("./config.json"));
+        } catch (IOException e) {
+            System.out.println("Error occured when parse from config.json");
+        } catch (ParseException e) {
+            System.out.println("Error occured when parse from config.json. Check Json syntax");
+        }
+        this.BASE_URL = (String) jsonObject.get("baseurl");
+        this.PORT = Integer.parseInt(String.valueOf(jsonObject.get("port")));
+        this.HOST = (String) jsonObject.get("host");
+        
+        this.DEST = HOST + ":" + PORT + BASE_URL;
+    }
+
 
     @Test   // TCU-0111
     public void testPostUserLessTwentyLetter() throws IOException, ParseException {
@@ -202,17 +220,16 @@ public class UserTest {
 
         Response response2 = postUsers(randomStringGenerator.nextRandomString(20));
         User getUser2 = getUsers(response2.getUser().getUserid()).getUser();
-        
+
         Response response3 = postChatRoom(randomStringGenerator.nextRandomString(20), getUser2.getUserid());
         Response response4 = postChatRoom(randomStringGenerator.nextRandomString(20), getUser2.getUserid());
         
         joinRoom(getUser1.getUserid(), response4.getChatroom().getChatroomid());
         joinRoom(getUser1.getUserid(), response3.getChatroom().getChatroomid());
-     
         Response response5 = getOwnChatrooms(getUser1.getUserid());
-
-        assertEquals(response3.getChatroom().getChatroomid(), response5.getChatroomArrayList().get(1).getChatroomid());
+        
         assertEquals(response4.getChatroom().getChatroomid(), response5.getChatroomArrayList().get(0).getChatroomid());
+        assertEquals(response3.getChatroom().getChatroomid(), response5.getChatroomArrayList().get(1).getChatroomid());
     }
     
     @Test   // TCU-0511
@@ -222,7 +239,6 @@ public class UserTest {
         Chatroom chatroom2 = postChatRoom(randomStringGenerator.nextRandomString(30), response.getUser().getUserid()).getChatroom();
         
         response = getOwnChatrooms(response.getUser().getUserid());
-        
         int id1 = response.getChatroomArrayList().get(0).getChatroomid();
         int id2 = response.getChatroomArrayList().get(1).getChatroomid();
         assertEquals(chatroom1.getChatroomid(), id1);
@@ -271,11 +287,134 @@ public class UserTest {
     public void postMessage() throws IOException, ParseException {
         Response response1 = postUsers(randomStringGenerator.nextRandomString(20));
         User getUser1 = getUsers(response1.getUser().getUserid()).getUser();
+        String chatroomname = randomStringGenerator.nextRandomString(80);
         
+        int chatroomid = postChatRoom(chatroomname, getUser1.getUserid()).getChatroom().getChatroomid();
+        Message message = postMessage(getUser1.getUserid(), 0, chatroomid, "Goodbye, World!").getMessage();
+        
+        Message message2 = getMessage(getUser1.getUserid(), chatroomid).getMessagesArrayList().get(0);
+        assertEquals(message.getMessageid(), message2.getMessageid());
+        assertEquals(message.getMessageBody(), message2.getMessageBody());
+    }
+    
+    private Response getMessage(int userid, int chatroomid) throws IOException, ParseException {
+        String str = DEST + "chatrooms/" + chatroomid + "/messages";
+        URL url = new URL(str);
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("GET");
+        urlConnection.setRequestProperty("Accept", "application/json");
+        urlConnection.setRequestProperty("userid", String.valueOf(userid));
+
+        Response response = new Response();
+
+        
+        if (urlConnection.getResponseCode() != 200) {
+            response.setStatusCode(urlConnection.getResponseCode());
+            return response;
+        }
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+
+        String output;
+        StringBuilder sb = new StringBuilder();
+
+        while ((output = br.readLine()) != null) {
+            sb.append(output);
+        }
+
+        response = new Response();
+        response.setStatusCode(urlConnection.getResponseCode());
+
+        urlConnection.disconnect();
+        
+        JSONObject obj = (JSONObject) jsonParser.parse(sb.toString());
+        JSONArray jsonArray = (JSONArray) obj.get("messages");
+        ArrayList<Message> messageList = makeArrayMessageListFromJsonArray(jsonArray);
+        response.setMessagesArrayList(messageList);
+        return response;
+    }
+
+    private ArrayList<Message> makeArrayMessageListFromJsonArray(JSONArray jsonArray) {
+
+        ArrayList<Message> messagesArrayList = new ArrayList<>();
+
+        for (int i = 0; i < jsonArray.size(); ++i) {
+            JSONObject obj = (JSONObject) jsonArray.get(i);
+            Message message = new Message();
+            message.setSenderid(getInt(obj.get("senderid")));
+            message.setReceiverid(getInt(obj.get("receiverid")));
+            message.setMessageid(getInt(obj.get("messageid")));
+            message.setMessageBody((String) obj.get("messagebody"));
+            messagesArrayList.add(message);
+        }
+
+        return messagesArrayList;
+    }
+    
+    private int getInt(Object jsonValue) {
+        return Integer.parseInt(String.valueOf(jsonValue));
+    }
+    
+
+    private Response postMessage(int senderid, int receiverid, int chatroomid, String messagebody) throws IOException, ParseException {
+        String str = DEST + "chatrooms/" + chatroomid + "/messages";
+        JSONObject jsonObject = new JSONObject();
+        /*
+        
+         */
+        jsonObject.put("chatroomid", chatroomid);
+        jsonObject.put("senderid", senderid);
+        jsonObject.put("receiverid", receiverid);
+        jsonObject.put("messagebody", messagebody);
+
+        /*
+        
+         */
+        URL url = new URL(str);
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setDoOutput(true);
+        urlConnection.setRequestMethod("POST");
+        urlConnection.setRequestProperty("Content-Type", "application/json");
+
+        /*
+        
+         */
+        OutputStream out = urlConnection.getOutputStream();
+        out.write(jsonObject.toJSONString().getBytes());
+        out.flush();
+
+        int statusCode = urlConnection.getResponseCode();
+
+        if (statusCode != 200)
+            return new Response(statusCode);
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+
+        String output;
+        StringBuilder sb = new StringBuilder();
+
+        while ((output = br.readLine()) != null)
+            sb.append(output);
+
+        Response response = new Response();
+        response.setStatusCode(urlConnection.getResponseCode());
+
+        jsonObject = (JSONObject) jsonParser.parse(sb.toString());
+        response.getMessage().setMessageBody((String) jsonObject.get("messagebody"));
+        response.getMessage().setMessageid(parseFromString(String.valueOf(jsonObject.get("messageid"))));
+        response.getMessage().setSenderid(parseFromString(String.valueOf(jsonObject.get("senderid"))));
+        response.getMessage().setReceiverid(parseFromString(String.valueOf(jsonObject.get("receiverid"))));
+
+        return response;
+    }
+    
+    public int parseFromString(String unparse) {
+        return Integer.parseInt(String.valueOf(unparse));
     }
 
     private Response getJoinerFromSpecificChatroom(int chatroomid) throws IOException, ParseException {
-        String str = HOST_URL + PORT + BASE_URL + "chatrooms/" + chatroomid + "/users";
+        String str = DEST + "chatrooms/" + chatroomid + "/users";
+        
 
         URL url = new URL(str);
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -297,6 +436,8 @@ public class UserTest {
         while ((output = br.readLine()) != null) {
             sb.append(output);
         }
+        
+        
 
         response = new Response();
         response.setStatusCode(urlConnection.getResponseCode());
@@ -313,7 +454,7 @@ public class UserTest {
 
 
     public Response quitFromChatroom(int chatroomid, int userid) throws IOException {
-        String str = HOST_URL + PORT + BASE_URL + "chatrooms/" + chatroomid + "/users/" + userid;
+        String str = DEST + "chatrooms/" + chatroomid + "/users/" + userid;
 
         URL url = new URL(str);
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -329,7 +470,7 @@ public class UserTest {
     
     
     private Response joinRoom(int userid, int chatroomid) throws IOException, ParseException {
-        String str = HOST_URL + PORT + BASE_URL + "chatrooms/" + chatroomid + "/users";
+        String str = DEST + "chatrooms/" + chatroomid + "/users";
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("chatroomid", chatroomid);
         jsonObject.put("userid", userid);
@@ -349,14 +490,13 @@ public class UserTest {
         if (statusCode != 200) {
             return new Response(statusCode);
         }
-
         
         return new Response(statusCode);
     }
 
     
     private Response putChatroom(String chatroomname, int userid, int chatroomid) throws IOException, ParseException {
-        String str = HOST_URL + PORT + BASE_URL + "chatrooms/" + chatroomid;
+        String str = DEST + "chatrooms/" + chatroomid;
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("chatroomname", chatroomname);
         jsonObject.put("userid", userid);
@@ -389,7 +529,6 @@ public class UserTest {
         response.setStatusCode(urlConnection.getResponseCode());
 
         jsonObject = (JSONObject) jsonParser.parse(sb.toString());
-        System.out.println(sb.toString());
         response.getChatroom().setChatroomname((String) jsonObject.get("chatroomname"));
         response.getChatroom().setUserid(Integer.parseInt(String.valueOf(jsonObject.get("userid")), 10));
         response.getChatroom().setChatroomid(Integer.parseInt(String.valueOf(jsonObject.get("chatroomid")), 10));
@@ -397,7 +536,7 @@ public class UserTest {
     }
 
     private Response getOwnChatrooms(int userid) throws IOException, ParseException {
-        String str = HOST_URL + PORT + BASE_URL + "users/" + userid + "/chatrooms";
+        String str = DEST + "users/" + userid + "/chatrooms";
         
         URL url = new URL(str);
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -470,7 +609,7 @@ public class UserTest {
     }
     
     private Response postChatRoom(String chatroomname, int userid) throws IOException, ParseException {
-        String str = HOST_URL + PORT + BASE_URL + "chatrooms/";
+        String str = DEST + "chatrooms/";
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("chatroomname", chatroomname);
         jsonObject.put("userid", userid);
@@ -520,7 +659,7 @@ public class UserTest {
     }
 
     private Response deleteUser(int userid) throws IOException, ParseException {
-        String str = HOST_URL + PORT + BASE_URL + "users/" + userid;
+        String str = DEST + "users/" + userid;
 
         URL url = new URL(str);
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -550,7 +689,7 @@ public class UserTest {
     }
 
     private Response putUser(int userid, String nickname) throws IOException, ParseException {
-        String str = HOST_URL + PORT + BASE_URL + "users/" + userid;
+        String str = DEST + "users/" + userid;
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("nickname", nickname);
@@ -590,11 +729,9 @@ public class UserTest {
     }
 
     public Response postUsers(String nickname) throws IOException, ParseException {
-        String str = HOST_URL + PORT + BASE_URL + "users/";
-        
+        String str = DEST + "users/";
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("nickname", nickname);
-
         URL url = new URL(str);
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setDoOutput(true);
@@ -630,7 +767,7 @@ public class UserTest {
     }
 
     public Response getUsers(int userid) throws IOException, ParseException {
-        String str = HOST_URL + PORT + BASE_URL + "users/" + userid;
+        String str = DEST + "users/" + userid;
 
         URL url = new URL(str);
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
