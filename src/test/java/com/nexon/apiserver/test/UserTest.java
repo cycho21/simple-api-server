@@ -297,6 +297,60 @@ public class UserTest {
         assertEquals(message.getMessageBody(), message2.getMessageBody());
     }
     
+    @Test   // TCN-0211
+    public void getWhipserByReceiverOrSender() throws IOException, ParseException {
+        Response response1 = postUsers(randomStringGenerator.nextRandomString(20));
+        User getUser1 = getUsers(response1.getUser().getUserid()).getUser();
+
+        Response response2 = postUsers(randomStringGenerator.nextRandomString(20));
+        User getUser2 = getUsers(response2.getUser().getUserid()).getUser();
+
+        Response response3 = postUsers(randomStringGenerator.nextRandomString(20));
+        User getUser3 = getUsers(response3.getUser().getUserid()).getUser();
+
+        int chatroomid = postChatRoom(randomStringGenerator.nextRandomString(80), getUser1.getUserid()).getChatroom().getChatroomid();
+        
+        joinRoom(getUser2.getUserid(), chatroomid);
+        joinRoom(getUser3.getUserid(), chatroomid);
+        
+        String msg = "THIS IS FROM USER1 TO USER2 MESSAGE";
+        
+        postMessage(getUser1.getUserid(), getUser2.getUserid(), chatroomid, msg);
+        
+        Message message1 = getMessage(getUser1.getUserid(), chatroomid).getMessagesArrayList().get(0);
+        Message message2 = getMessage(getUser2.getUserid(), chatroomid).getMessagesArrayList().get(0);
+        
+        assertEquals(message1.getMessageBody(), msg);
+        assertEquals(message2.getMessageBody(), msg);
+        assertEquals(message1.getMessageBody(), message2.getMessageBody());
+        assertEquals(message1.getMessageid(), message2.getMessageid());
+    }
+    
+    @Test
+    public void getWhisperByOtherUser() throws IOException, ParseException {
+        Response response1 = postUsers(randomStringGenerator.nextRandomString(20));
+        User getUser1 = getUsers(response1.getUser().getUserid()).getUser();
+
+        Response response2 = postUsers(randomStringGenerator.nextRandomString(20));
+        User getUser2 = getUsers(response2.getUser().getUserid()).getUser();
+
+        Response response3 = postUsers(randomStringGenerator.nextRandomString(20));
+        User getUser3 = getUsers(response3.getUser().getUserid()).getUser();
+
+        int chatroomid = postChatRoom(randomStringGenerator.nextRandomString(80), getUser1.getUserid()).getChatroom().getChatroomid();
+
+        joinRoom(getUser2.getUserid(), chatroomid);
+        joinRoom(getUser3.getUserid(), chatroomid);
+
+        String msg = "THIS IS FROM USER1 TO USER2 MESSAGE";
+
+        postMessage(getUser1.getUserid(), getUser2.getUserid(), chatroomid, msg);
+
+        ArrayList<Message> message3 = getMessage(getUser3.getUserid(), chatroomid).getMessagesArrayList();
+
+        assertEquals(message3.size(), 0);
+    }
+    
     private Response getMessage(int userid, int chatroomid) throws IOException, ParseException {
         String str = DEST + "chatrooms/" + chatroomid + "/messages";
         URL url = new URL(str);

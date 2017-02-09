@@ -2,24 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22be22ae-cdaf-4f9c-bd8e-dbefa73edb78" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/config.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/nexon/apiserver/handler/ChatHandler.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/nexon/apiserver/utils/SimpleMapper.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/nexon/apiserver/handler/RootHandler.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/nexon/apiserver/utils/MappingUtils.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/java/com/nexon/apiserver/handler/UserHandlerTest.java" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/nexon/apiserver/utils/NicknameValidator.java" afterPath="$PROJECT_DIR$/src/main/java/com/nexon/apiserver/dao/NicknameValidator.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/nexon/apiserver/utils/ResponseSender.java" afterPath="$PROJECT_DIR$/src/main/java/com/nexon/apiserver/handler/responseSender.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nexon/apiserver/Server.java" afterPath="$PROJECT_DIR$/src/main/java/com/nexon/apiserver/Server.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nexon/apiserver/dao/Dao.java" afterPath="$PROJECT_DIR$/src/main/java/com/nexon/apiserver/dao/Dao.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nexon/apiserver/dao/Message.java" afterPath="$PROJECT_DIR$/src/main/java/com/nexon/apiserver/dao/Message.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nexon/apiserver/dao/SimpleSqliteTemplate.java" afterPath="$PROJECT_DIR$/src/main/java/com/nexon/apiserver/dao/SimpleSqliteTemplate.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nexon/apiserver/handler/ChatroomHandler.java" afterPath="$PROJECT_DIR$/src/main/java/com/nexon/apiserver/handler/ChatroomHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nexon/apiserver/handler/UserHandler.java" afterPath="$PROJECT_DIR$/src/main/java/com/nexon/apiserver/handler/UserHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/com/nexon/apiserver/Response.java" afterPath="$PROJECT_DIR$/src/test/java/com/nexon/apiserver/Response.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/com/nexon/apiserver/dao/DaoTest.java" afterPath="$PROJECT_DIR$/src/test/java/com/nexon/apiserver/dao/DaoTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/com/nexon/apiserver/test/UserTest.java" afterPath="$PROJECT_DIR$/src/test/java/com/nexon/apiserver/test/UserTest.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -39,16 +21,26 @@
       <content type="file-editors">
         <state>
           <leaf>
+            <file leaf-file-name="ResponseSender.java" pinned="false" current-in-tab="false">
+              <entry file="file://$PROJECT_DIR$/src/main/java/com/nexon/apiserver/handler/ResponseSender.java">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state relative-caret-position="126">
+                    <caret line="10" column="7" lean-forward="false" selection-start-line="10" selection-start-column="7" selection-end-line="10" selection-end-column="7" />
+                    <folding />
+                  </state>
+                </provider>
+              </entry>
+            </file>
             <file leaf-file-name="UserTest.java" pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/src/test/java/com/nexon/apiserver/test/UserTest.java">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="557">
-                    <caret line="297" column="5" lean-forward="false" selection-start-line="297" selection-start-column="5" selection-end-line="297" selection-end-column="5" />
+                  <state relative-caret-position="442">
+                    <caret line="321" column="5" lean-forward="false" selection-start-line="321" selection-start-column="5" selection-end-line="321" selection-end-column="5" />
                     <folding>
-                      <element signature="e#15544#15545#0" expanded="true" />
-                      <element signature="e#15610#15611#0" expanded="true" />
-                      <element signature="e#17649#17650#0" expanded="true" />
-                      <element signature="e#17713#17714#0" expanded="true" />
+                      <element signature="e#18156#18157#0" expanded="true" />
+                      <element signature="e#18222#18223#0" expanded="true" />
+                      <element signature="e#20261#20262#0" expanded="true" />
+                      <element signature="e#20325#20326#0" expanded="true" />
                     </folding>
                   </state>
                 </provider>
@@ -58,7 +50,7 @@
               <entry file="file://$PROJECT_DIR$/src/test/java/com/nexon/apiserver/Response.java">
                 <provider selected="true" editor-type-id="text-editor">
                   <state relative-caret-position="378">
-                    <caret line="26" column="5" lean-forward="true" selection-start-line="26" selection-start-column="5" selection-end-line="26" selection-end-column="5" />
+                    <caret line="26" column="5" lean-forward="false" selection-start-line="26" selection-start-column="5" selection-end-line="26" selection-end-column="5" />
                     <folding>
                       <element signature="e#1427#1428#0" expanded="true" />
                       <element signature="e#1454#1455#0" expanded="true" />
@@ -77,7 +69,7 @@
               <entry file="file://$PROJECT_DIR$/src/main/java/com/nexon/apiserver/dao/SimpleSqliteTemplate.java">
                 <provider selected="true" editor-type-id="text-editor">
                   <state relative-caret-position="915">
-                    <caret line="137" column="42" lean-forward="true" selection-start-line="137" selection-start-column="42" selection-end-line="137" selection-end-column="42" />
+                    <caret line="137" column="42" lean-forward="false" selection-start-line="137" selection-start-column="42" selection-end-line="137" selection-end-column="42" />
                     <folding>
                       <element signature="imports" expanded="true" />
                     </folding>
@@ -89,7 +81,7 @@
               <entry file="file://$PROJECT_DIR$/src/main/java/com/nexon/apiserver/utils/SimpleMapper.java">
                 <provider selected="true" editor-type-id="text-editor">
                   <state relative-caret-position="658">
-                    <caret line="165" column="26" lean-forward="true" selection-start-line="165" selection-start-column="26" selection-end-line="165" selection-end-column="26" />
+                    <caret line="165" column="26" lean-forward="false" selection-start-line="165" selection-start-column="26" selection-end-line="165" selection-end-column="26" />
                     <folding />
                   </state>
                 </provider>
@@ -109,8 +101,8 @@
       <file leaf-file-name="ChatroomHandler.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/nexon/apiserver/handler/ChatroomHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="164">
-              <caret line="140" column="47" lean-forward="false" selection-start-line="140" selection-start-column="47" selection-end-line="140" selection-end-column="47" />
+            <state relative-caret-position="218">
+              <caret line="143" column="68" lean-forward="true" selection-start-line="143" selection-start-column="68" selection-end-line="143" selection-end-column="68" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -132,7 +124,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/com/nexon/apiserver/handler/ChatHandler.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-4">
-              <caret line="11" column="3" lean-forward="true" selection-start-line="11" selection-start-column="3" selection-end-line="11" selection-end-column="3" />
+              <caret line="11" column="3" lean-forward="false" selection-start-line="11" selection-start-column="3" selection-end-line="11" selection-end-column="3" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -144,7 +136,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/com/nexon/apiserver/handler/UserHandler.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="590">
-              <caret line="53" column="13" lean-forward="true" selection-start-line="53" selection-start-column="13" selection-end-line="53" selection-end-column="13" />
+              <caret line="53" column="13" lean-forward="false" selection-start-line="53" selection-start-column="13" selection-end-line="53" selection-end-column="13" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -156,7 +148,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/com/nexon/apiserver/dao/Dao.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="208">
-              <caret line="166" column="42" lean-forward="true" selection-start-line="166" selection-start-column="42" selection-end-line="166" selection-end-column="42" />
+              <caret line="166" column="42" lean-forward="false" selection-start-line="166" selection-start-column="42" selection-end-line="166" selection-end-column="42" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -264,10 +256,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1936" />
-    <option name="height" value="1176" />
+    <option name="width" value="1920" />
+    <option name="height" value="1160" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -568,7 +558,7 @@
       <recent name="com.nexon.apiserver.handler" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.UserTest.postMessage">
+  <component name="RunManager" selected="JUnit.UserTest (1)">
     <configuration default="false" name="UserTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -621,58 +611,6 @@
       <patterns />
       <method />
     </configuration>
-    <configuration default="false" name="UserTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="com.nexon.apiserver.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <module name="simple-api-server" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="com.nexon.apiserver.test" />
-      <option name="MAIN_CLASS_NAME" value="com.nexon.apiserver.test.UserTest" />
-      <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-      <method />
-    </configuration>
-    <configuration default="false" name="UserTest.testPutUser" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="com.nexon.apiserver.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <module name="simple-api-server" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="com.nexon.apiserver.test" />
-      <option name="MAIN_CLASS_NAME" value="com.nexon.apiserver.test.UserTest" />
-      <option name="METHOD_NAME" value="testPutUser" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-      <method />
-    </configuration>
     <configuration default="false" name="UserTest.postMessage" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -687,6 +625,58 @@
       <option name="MAIN_CLASS_NAME" value="com.nexon.apiserver.test.UserTest" />
       <option name="METHOD_NAME" value="postMessage" />
       <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="false" name="UserTest.getWhipserByOtherUser" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="com.nexon.apiserver.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <module name="simple-api-server" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="com.nexon.apiserver.test" />
+      <option name="MAIN_CLASS_NAME" value="com.nexon.apiserver.test.UserTest" />
+      <option name="METHOD_NAME" value="getWhipserByOtherUser" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="false" name="UserTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="com.nexon.apiserver.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <module name="simple-api-server" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="com.nexon.apiserver.test" />
+      <option name="MAIN_CLASS_NAME" value="com.nexon.apiserver.test.UserTest" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
@@ -906,17 +896,17 @@
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="JUnit.UserTest" />
       <item index="1" class="java.lang.String" itemvalue="JUnit.UserTest.joinOneMoreRoom" />
-      <item index="2" class="java.lang.String" itemvalue="JUnit.UserTest (1)" />
-      <item index="3" class="java.lang.String" itemvalue="JUnit.UserTest.testPutUser" />
-      <item index="4" class="java.lang.String" itemvalue="JUnit.UserTest.postMessage" />
+      <item index="2" class="java.lang.String" itemvalue="JUnit.UserTest.postMessage" />
+      <item index="3" class="java.lang.String" itemvalue="JUnit.UserTest.getWhipserByOtherUser" />
+      <item index="4" class="java.lang.String" itemvalue="JUnit.UserTest (1)" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JUnit.UserTest.postMessage" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.UserTest" />
-        <item index="2" class="java.lang.String" itemvalue="JUnit.UserTest.joinOneMoreRoom" />
-        <item index="3" class="java.lang.String" itemvalue="JUnit.UserTest.testPutUser" />
-        <item index="4" class="java.lang.String" itemvalue="JUnit.UserTest (1)" />
+        <item index="0" class="java.lang.String" itemvalue="JUnit.UserTest (1)" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.UserTest.getWhipserByOtherUser" />
+        <item index="2" class="java.lang.String" itemvalue="JUnit.UserTest.postMessage" />
+        <item index="3" class="java.lang.String" itemvalue="JUnit.UserTest" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.UserTest.joinOneMoreRoom" />
       </list>
     </recent_temporary>
   </component>
@@ -942,17 +932,17 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="UserTest_postMessage - 2017.02.09 at 14h 51m 10s.xml">
-      <configuration name="UserTest.postMessage" configurationId="JUnit" />
+    <history-entry file="UserTest_(1) - 2017.02.09 at 15h 28m 59s.xml">
+      <configuration name="UserTest (1)" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="UserTest_postMessage - 2017.02.09 at 14h 52m 28s.xml">
-      <configuration name="UserTest.postMessage" configurationId="JUnit" />
+    <history-entry file="UserTest_getWhipserByOtherUser - 2017.02.09 at 15h 26m 41s.xml">
+      <configuration name="UserTest.getWhipserByOtherUser" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="UserTest_postMessage - 2017.02.09 at 14h 53m 03s.xml">
-      <configuration name="UserTest.postMessage" configurationId="JUnit" />
+    <history-entry file="UserTest_getWhipserByOtherUser - 2017.02.09 at 15h 27m 00s.xml">
+      <configuration name="UserTest.getWhipserByOtherUser" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="UserTest_postMessage - 2017.02.09 at 14h 53m 33s.xml">
-      <configuration name="UserTest.postMessage" configurationId="JUnit" />
+    <history-entry file="UserTest_getWhipserByOtherUser - 2017.02.09 at 15h 27m 36s.xml">
+      <configuration name="UserTest.getWhipserByOtherUser" configurationId="JUnit" />
     </history-entry>
     <history-entry file="UserTest_postMessage - 2017.02.09 at 14h 55m 30s.xml">
       <configuration name="UserTest.postMessage" configurationId="JUnit" />
@@ -983,7 +973,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
+    <frame x="0" y="0" width="1920" height="1160" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1000,14 +990,14 @@
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39962476" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32739213" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32666665" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32833022" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36022514" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36571428" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1984375" sideWeight="0.4936306" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20010504" sideWeight="0.4936306" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3292683" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24947807" sideWeight="0.5063694" order="2" side_tool="true" content_ui="tabs" />
@@ -1291,14 +1281,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/nexon/apiserver/handler/ResponseSender.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="10" column="13" lean-forward="false" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/nexon/apiserver/Server.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="686">
@@ -1328,7 +1310,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/com/nexon/apiserver/handler/UserHandler.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="590">
-          <caret line="53" column="13" lean-forward="true" selection-start-line="53" selection-start-column="13" selection-end-line="53" selection-end-column="13" />
+          <caret line="53" column="13" lean-forward="false" selection-start-line="53" selection-start-column="13" selection-end-line="53" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1340,8 +1322,8 @@
         <state relative-caret-position="486">
           <caret line="31" column="16" lean-forward="true" selection-start-line="31" selection-start-column="16" selection-end-line="31" selection-end-column="16" />
           <folding>
-            <element signature="e#623#624#0" expanded="true" />
-            <element signature="e#654#655#0" expanded="true" />
+            <element signature="e#623#624#0" expanded="false" />
+            <element signature="e#654#655#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1349,7 +1331,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/com/nexon/apiserver/handler/ChatHandler.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-4">
-          <caret line="11" column="3" lean-forward="true" selection-start-line="11" selection-start-column="3" selection-end-line="11" selection-end-column="3" />
+          <caret line="11" column="3" lean-forward="false" selection-start-line="11" selection-start-column="3" selection-end-line="11" selection-end-column="3" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1359,7 +1341,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/com/nexon/apiserver/dao/Dao.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="208">
-          <caret line="166" column="42" lean-forward="true" selection-start-line="166" selection-start-column="42" selection-end-line="166" selection-end-column="42" />
+          <caret line="166" column="42" lean-forward="false" selection-start-line="166" selection-start-column="42" selection-end-line="166" selection-end-column="42" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1369,7 +1351,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/com/nexon/apiserver/utils/SimpleMapper.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="658">
-          <caret line="165" column="26" lean-forward="true" selection-start-line="165" selection-start-column="26" selection-end-line="165" selection-end-column="26" />
+          <caret line="165" column="26" lean-forward="false" selection-start-line="165" selection-start-column="26" selection-end-line="165" selection-end-column="26" />
           <folding />
         </state>
       </provider>
@@ -1377,7 +1359,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/com/nexon/apiserver/dao/SimpleSqliteTemplate.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="915">
-          <caret line="137" column="42" lean-forward="true" selection-start-line="137" selection-start-column="42" selection-end-line="137" selection-end-column="42" />
+          <caret line="137" column="42" lean-forward="false" selection-start-line="137" selection-start-column="42" selection-end-line="137" selection-end-column="42" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1387,7 +1369,7 @@
     <entry file="file://$PROJECT_DIR$/src/test/java/com/nexon/apiserver/Response.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="378">
-          <caret line="26" column="5" lean-forward="true" selection-start-line="26" selection-start-column="5" selection-end-line="26" selection-end-column="5" />
+          <caret line="26" column="5" lean-forward="false" selection-start-line="26" selection-start-column="5" selection-end-line="26" selection-end-column="5" />
           <folding>
             <element signature="e#1427#1428#0" expanded="true" />
             <element signature="e#1454#1455#0" expanded="true" />
@@ -1403,23 +1385,31 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/nexon/apiserver/handler/ChatroomHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="140" column="47" lean-forward="false" selection-start-line="140" selection-start-column="47" selection-end-line="140" selection-end-column="47" />
+        <state relative-caret-position="218">
+          <caret line="143" column="68" lean-forward="true" selection-start-line="143" selection-start-column="68" selection-end-line="143" selection-end-column="68" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/nexon/apiserver/handler/ResponseSender.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="10" column="7" lean-forward="false" selection-start-line="10" selection-start-column="7" selection-end-line="10" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/com/nexon/apiserver/test/UserTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="557">
-          <caret line="297" column="5" lean-forward="false" selection-start-line="297" selection-start-column="5" selection-end-line="297" selection-end-column="5" />
+        <state relative-caret-position="442">
+          <caret line="321" column="5" lean-forward="false" selection-start-line="321" selection-start-column="5" selection-end-line="321" selection-end-column="5" />
           <folding>
-            <element signature="e#15544#15545#0" expanded="true" />
-            <element signature="e#15610#15611#0" expanded="true" />
-            <element signature="e#17649#17650#0" expanded="true" />
-            <element signature="e#17713#17714#0" expanded="true" />
+            <element signature="e#18156#18157#0" expanded="true" />
+            <element signature="e#18222#18223#0" expanded="true" />
+            <element signature="e#20261#20262#0" expanded="true" />
+            <element signature="e#20325#20326#0" expanded="true" />
           </folding>
         </state>
       </provider>
