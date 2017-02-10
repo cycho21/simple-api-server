@@ -57,9 +57,9 @@ public class Server {
             SimpleMapper mapper = new SimpleMapper();
             dao.initialize();
             HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
-            server.createContext("/api/v1/users", new UserHandler(dao, responseSender, mapper));
-            server.createContext("/api/v1/chatrooms", new ChatroomHandler(dao, responseSender, mapper));
-            server.createContext("/api/v1/fortest", httpExchange -> {
+            server.createContext(BASE_URL + "users", new UserHandler(dao, responseSender, mapper));
+            server.createContext(BASE_URL +"chatrooms", new ChatroomHandler(dao, responseSender, mapper));
+            server.createContext(BASE_URL + "fortest", httpExchange -> {
                 logger.info("Delete all tables, and recreate for test");
                 dao.initialize();     
             });
