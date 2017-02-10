@@ -1,18 +1,14 @@
 package com.nexon.apiserver.handler;
-
 import com.sun.net.httpserver.HttpExchange;
 import org.apache.log4j.Logger;
-
 import java.io.IOException;
 import java.io.OutputStream;
-
 /**
  * Created by chan8 on 2017-02-07.
  */
 public class ResponseSender {
-    
-    private Logger logger = Logger.getLogger(ResponseSender.class);
 
+    private Logger logger = Logger.getLogger(ResponseSender.class);
     public void sendResponse(HttpExchange httpExchange, String response) {
         OutputStream outputStream = null;
         try {
@@ -29,7 +25,6 @@ public class ResponseSender {
             }
         }
     }
-
     public void sendErrorResponse(HttpExchange httpExchange, int statusCode, String detail) {
         OutputStream outputStream = null;
         try {
