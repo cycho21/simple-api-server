@@ -5,8 +5,6 @@ import com.nexon.apiserver.handler.ChatroomHandler;
 import com.nexon.apiserver.handler.ResponseSender;
 import com.nexon.apiserver.handler.UserHandler;
 import com.nexon.apiserver.handler.SimpleMapper;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -34,14 +32,14 @@ public class Server {
     }
 
     public void initialize() {
-        PropertyConfigurator.configure("log4j.properties");
+        PropertyConfigurator.configure(System.getProperty("user.dir") + "/log4j.properties");
         JSONParser jsonParser = new JSONParser();
         JSONObject jsonObject = null;
     
         logger.info("Chatting API server initialized...");
         
         try {
-            jsonObject = (JSONObject) jsonParser.parse(new FileReader("./config.json"));
+            jsonObject = (JSONObject) jsonParser.parse(new FileReader(System.getProperty("user.dir") + "/config.json"));
         } catch (IOException e) {
             logger.error("Error occured when parse from config.json. File not found.");
         } catch (ParseException e) {

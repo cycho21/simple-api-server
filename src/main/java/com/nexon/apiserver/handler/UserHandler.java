@@ -46,7 +46,7 @@ public class UserHandler implements HttpHandler {
 
         boolean hasPathVariable = matcher.find();
 
-        logger.info(":: UserHandler handle request :: URI : " + httpExchange.getRequestURI());
+        logger.info(":: UserHandler handle request :: URI : " + httpExchange.getRequestURI() + " ::");
         logger.info(":: Requestmethod : " + httpExchange.getRequestMethod() + " ::");
         
         
@@ -64,10 +64,13 @@ public class UserHandler implements HttpHandler {
         switch (request) {
             case HttpMethod.GET:
                 
-                if (pathVariables[pathVariables.length - 1].contains("chatrooms")) {
-                    List<Chatroom> chatrooms = dao.getChatRoomByUserid(Integer.parseInt(pathVariables[0]));
-                    response = mapper.makeBodyFromChatrooms(chatrooms).toJSONString();
-                    responseSender.sendResponse(httpExchange, response);
+                if (pathVariables.length >= 2) {
+                    if (pathVariables[1].contains("chatrooms")) {
+                        List<Chatroom> chatrooms = dao.getChatRoomByUserid(Integer.parseInt(pathVariables[0]));
+                        response = mapper.makeBodyFromChatrooms(chatrooms).toJSONString();
+                        responseSender.sendResponse(httpExchange, response);
+                        break;
+                    }
                 }
                 
                 user = dao.getUser(Integer.parseInt(pathVariable, 10));
@@ -75,11 +78,12 @@ public class UserHandler implements HttpHandler {
                 if (user.getNickname() != null) {
                     response = mapper.makeBodyFromUser(user).toJSONString();
                     responseSender.sendResponse(httpExchange, response);
+                    break;
                 } else {
                     responseSender.sendErrorResponse(httpExchange, 404, "Not Found");
+                    break;
                 }
                 
-                break;
             case HttpMethod.PUT:
                 user = mapper.parseBodyToUser(httpExchange.getRequestBody());
                 

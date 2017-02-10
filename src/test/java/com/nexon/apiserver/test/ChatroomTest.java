@@ -410,6 +410,7 @@ public class ChatroomTest {
         response.setStatusCode(urlConnection.getResponseCode());
 
         urlConnection.disconnect();
+        System.out.println(sb.toString());
         JSONObject obj = (JSONObject) jsonParser.parse(sb.toString());
         JSONArray jsonArray = (JSONArray) obj.get("chatrooms");
         ArrayList<Chatroom> chatroomList = makeArrayListFromJsonArray(jsonArray);

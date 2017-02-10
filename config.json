@@ -1,5 +1,5 @@
 {
   "baseurl":"/api/v1/",
-  "host":"http://localhost",
-  "port":8000
+  "host":"http://192.168.56.1",
+  "port":8080
 }

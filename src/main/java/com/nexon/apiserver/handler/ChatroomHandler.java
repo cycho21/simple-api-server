@@ -43,7 +43,7 @@ public class ChatroomHandler implements HttpHandler {
         Matcher matcher = pattern.matcher(path);
         boolean hasPathVariable = matcher.find();
 
-        logger.info(":: UserHandler handle request :: URI : " + httpExchange.getRequestURI());
+        logger.info(":: UserHandler handle request :: URI : " + httpExchange.getRequestURI() + " ::");
         logger.info(":: Requestmethod : " + httpExchange.getRequestMethod() + " ::");
         
         if (hasPathVariable == true)
@@ -118,6 +118,7 @@ public class ChatroomHandler implements HttpHandler {
                     break;
                 }
             case HttpMethod.GET:
+                System.out.println("ISTHIS?");
                 chatroomid = Integer.parseInt(pathVariables[0], 10);
                 ArrayList<User> users = dao.getChatroomJoiner(chatroomid);
                 response = mapper.makeBodyFromUsers(users).toJSONString();

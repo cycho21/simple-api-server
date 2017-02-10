@@ -130,7 +130,6 @@ public class SimpleSqliteTemplate {
                     e.printStackTrace();
                 }
                 return messageList;
-
         }
         return null;
     }
