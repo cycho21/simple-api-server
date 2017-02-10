@@ -377,7 +377,6 @@ public class TestAll {
         while ((output = br.readLine()) != null) {
             sb.append(output);
         }
-
         response = new Response();
         response.setStatusCode(urlConnection.getResponseCode());
 
