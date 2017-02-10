@@ -65,7 +65,6 @@ public class TestAll {
         this.DEST = HOST + ":" + PORT + BASE_URL;
     }
 
-
     @Test   // TCU-0111
     public void testPostUserLessTwentyLetter() throws IOException, ParseException {
         testPostUser(randomStringGenerator.nextRandomString(random.nextInt(19)));
@@ -228,11 +227,8 @@ public class TestAll {
         joinRoom(getUser1.getUserid(), response3.getChatroom().getChatroomid());
         
         Response response5 = getOwnChatrooms(getUser1.getUserid());
-        
-        
-        
-//        assertEquals(response4.getChatroom().getChatroomid(), response5.getChatroomArrayList().get(0).getChatroomid());
-//        assertEquals(response3.getChatroom().getChatroomid(), response5.getChatroomArrayList().get(1).getChatroomid());
+        assertEquals(response4.getChatroom().getChatroomid(), response5.getChatroomArrayList().get(0).getChatroomid());
+        assertEquals(response3.getChatroom().getChatroomid(), response5.getChatroomArrayList().get(1).getChatroomid());
     }
     
     @Test   // TCU-0511
